@@ -1,0 +1,6 @@
+# DEPRECATED — anchors are recorded in trajectories/example_point.txt via record_anchor_points.py
+# Generate waypoints: python3 src/pythontool/generate_field_waypoints.py --viz
+
+# Legacy example (replaced by example_point.txt):
+# anchor_a1_map: [1.45, 2.40]
+# anchor_c4_low_map: [1.54, 4.54]

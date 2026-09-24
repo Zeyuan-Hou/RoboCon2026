@@ -1,0 +1,13 @@
+/quad/lidar_nav_demo_node:
+  ros__parameters:
+    pre_path_spin_enable: true
+    pre_path_spin_target_yaws: [0.5, -0.5, 0.1]
+    pre_path_spin_pause_s: 1.0
+    pre_path_spin_kp_yaw: 3.0
+    pre_path_spin_max_wz: 0.5
+    pre_path_spin_yaw_tol: 0.06
+    pre_scan_pause_after_done: true # 左右看完成后先停 pre_scan_hold_after_done_s，再到 record_pass 第一个点等 1s eightboxes
+    pre_scan_hold_after_done_s: 1.0 # 左右看完成后的原地停留时间，再去 record_pass 第一个点
+    pre_scan_fallback_enable: true  # true 时左右看超时也会继续到观察点，再按 eightboxes/default 生成路径
+    pre_scan_timeout_s: 8.0         # 左右看最大等待时间；与 ocr_wait_after_eightboxes_sec 独立
+    default_priorities: [0, 0, 1, 1, 2, 2, 3, 3] # 视觉失败/无相机时使用的固定物块优先级

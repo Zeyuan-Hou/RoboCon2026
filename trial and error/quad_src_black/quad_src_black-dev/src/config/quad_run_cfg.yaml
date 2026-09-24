@@ -1,0 +1,363 @@
+/quad/aruco:
+  ros__parameters:
+    camera_id: 5
+    image_width: 640
+    image_height: 480
+    camera_fps: 30
+    camera_fourcc: "YUYV"
+    show_image: false
+    marker_size_mm: 168.0
+    # Approximate RealSense RGB intrinsics for 640x480. Replace with calibration if available.
+    camera_fx: 618.11
+    camera_fy: 617.80
+    camera_cx: 326.70
+    camera_cy: 244.65
+    dist_coeffs: [0.0, 0.0, 0.0, 0.0, 0.0]
+
+/quad/lidar_pose_bridge_node:
+  ros__parameters:
+    target_frame: "camera_init"
+    child_frame: "aft_mapped"
+    lidar_pose_topic: "/quad/lidar_pose_xyyaw"
+    publish_rate_hz: 20.0
+
+/quad/task_executor_node:
+  ros__parameters:
+    target_frame: "camera_init"
+    child_frame: "aft_mapped"
+    tf_topic: "/tf"
+    lidar_pose_topic: "/quad/lidar_pose_xyyaw"
+
+    # Bridge
+    #unused
+    straight_target_yaw: 0.0
+    
+    straight_target_dist: 1.25
+    straight_max_speed: 0.5
+    straight_kp_y: 0.8
+    kp_xy: 0.5
+    kp_yaw: 1.0
+    max_vy: 0.5
+    max_dyaw: 0.5
+
+    visual_servoing:
+      # QR visual frame: x right +, y forward +, yaw clockwise +.
+      # Each offset is [x_mm, y_mm, yaw_deg].
+      default_offset: [0.0, 700.0, 0.0]
+      tolerance_x_m: 0.1
+      tolerance_y_m: 0.1
+      tolerance_yaw_rad: 0.08
+      kp_x: 2.5
+      kp_y: 2.5
+      kp_yaw: 0.45
+      max_vx: 0.5
+      max_vy: 0.5
+      max_wz: 0.25
+      yaw_error_sign: -1.0
+      task_1_offset: [105.0, 1866.8, 5.12] #上楼梯
+      task_2_offset: [416.29, 1032.14, 10.0] #木桥
+      task_3_offset: [0.0, 1200.0, 0.0] #高墙
+      task_4_offset: [0.0, 1200.0, 0.0] #沙坑
+      task_5_offset: [118.42, 1899.24, 0.0] #矮杆
+      task_6_offset: [158.89, 1067.05, 5.27] #绕杆
+
+    tasks:
+      # Stair up: lidar-guided straight motion until the forward distance is reached
+      stair_duration: 5.0
+      stair_target_yaw: 0.0
+      stair_use_current_yaw: true
+      stair_forward_speed: 0.4
+      stair_kp_y: 1.35
+      stair_kp_yaw: 1.0
+      stair_max_vy: 0.25
+      stair_max_dyaw: 0.4
+      stair_max_distance: 4.0
+
+      # Lidar-guided crawl after switching RL policy to creep.
+      crawl_target_yaw: 0.0
+      crawl_use_current_yaw: true
+      crawl_forward_speed: 0.25
+      crawl_kp_y: 1.0
+      crawl_kp_yaw: 1.0
+      crawl_max_vy: 0.2
+      crawl_max_dyaw: 0.3
+      crawl_target_dist: 1.5
+
+      # Pole around: recorded trajectory replay in lidar/world frame.
+      # File format: time_sec x y yaw
+      pole_trajectory_file: "/home/cat/hitcrt_quad_ws/src/commands/lidar_nav_demo_cpp/config/trajectories/recorded_path.txt"
+      pole_kp_x: 0.9
+      pole_kp_y: 0.75
+      pole_kp_yaw: 0.8
+      pole_kd_x: 0.0
+      pole_kd_y: 0.0
+      pole_kd_yaw: 0.0
+      pole_lin_vel_creep_min: 0.0
+      pole_lidar_offset_x: 0.0
+      pole_lidar_offset_y: 0.0
+      pole_max_vx: 0.5
+      pole_max_vy: 0.45
+      pole_max_dyaw: 0.7
+
+/quad/obstacle_nav_node:
+  ros__parameters:
+    target_frame: "camera_init"
+    child_frame: "aft_mapped"
+    tf_topic: "/tf"
+
+    # POINT_SEQUENCE, TRAJECTORY_SEQUENCE, or RECORD_PARKU_REPLAY
+    navigation_mode: "POINT_SEQUENCE"
+
+    # POINT_SEQUENCE:
+    # Flat triples in lidar/world frame: [x1, y1, yaw1, x2, y2, yaw2, ...]
+    target_points: [
+      # -0.725763, 0.951219, -0.043226
+      #point1 
+      -0.17, 1.34, -0.006,
+      #point2
+      1.17, 2.54, 3.06
+      # #point3
+      # -2.26,6.45,3.129,
+      # #point4
+      # -3.716,0.65,1.467,
+
+    ]
+
+    # TRAJECTORY_SEQUENCE:
+    # Each file contains absolute lidar/world-frame points: x y yaw
+    # trajectory_files:
+    #   - "/absolute/path/to/obstacle_1_nav.txt"
+    #   - "/absolute/path/to/obstacle_2_nav.txt"
+
+    position_tolerance: 0.10
+    yaw_tolerance: 0.10
+
+    kp_x: 1.85
+    kp_y: 1.5
+    kp_yaw: 0.8
+    kd_x: 0.0
+    kd_y: 0.0
+    kd_yaw: 0.0
+
+    max_vx: 0.65
+    max_vy: 0.65
+    max_dyaw: 0.6
+    yaw_first_threshold: 0.25
+
+    control_rate: 50.0
+
+/quad/task_bridge_cross_node:
+  ros__parameters:
+    # --- TF 坐标系与话题配置 ---
+    target_frame: "camera_init"
+    child_frame: "aft_mapped"
+    tf_topic: "/tf"
+    
+    # --- 走木桥直线控制参数 ---
+    straight_target_yaw: 0.0      # 走桥时的目标朝向偏航角 (rad)
+    straight_target_dist: 4.0     # 走桥需要行进的总距离 (m)
+    straight_max_speed: 0.5       # 直线行进时的最大前向速度 (m/s)
+    straight_kp_y: 2.0            # 横向误差（走歪了）纠偏的 P 增益系数
+    
+    # --- 通用运动控制增益 ---
+    kp_xy: 0.5                    # 前向位置控制的 P 增益
+    kp_yaw: 1.0                   # 偏航角纠正的 P 增益
+    max_vy: 0.5                   # 最大横向纠偏速度 (m/s)
+    max_dyaw: 0.5                 # 最大旋转角速度 (rad/s)
+    
+    # --- 节点运行配置 ---
+    control_rate: 50.0            # 控制循环频率 (Hz)
+
+
+/quad/lidar_nav_demo_node:
+  ros__parameters:
+    target_frame: "camera_init"
+    child_frame: "aft_mapped"
+    
+    # 目标点序列 (waypoints) 按区域分类
+    # transition_front: 前排物资过渡点
+    # transition_back: 后排物资过渡点 (同时也是前往放置区的出入口)
+    # transition_mid: 前后排切换时的中间过渡点
+    # pickup_points: 物资区坐标点，格式为 [x1, y1, yaw1, is_front1, x2, y2, yaw2, is_front2...] 
+    #                注意：pickup增加了第4个元素，1.0表示前排，0.0表示后排
+    # dropoff_points: 放置区坐标点
+    transition_front: [0.0,  1.15, 0.0]
+    transition_back:  [1.0, -1.0, 0.0]
+    transition_mid:   [1.0,  0.0, 0.0]
+    
+    pickup_points: [
+      -1.20,  1.68,  1.57, 1.0,  # 取货点 1 (前排)
+      2.5, -1.0, -1.57, 0.0   # 取货点 2 (后排)
+    ]
+    
+    dropoff_points: [
+      2.0, -1.0, -1.57,  # 放货点 1
+      2.5, -1.0, -1.57   # 放货点 2
+    ]
+
+    wait_time: 3.0 # 到达 取货/放货 点后的等待时间(秒)
+    external_manipulation_enable: true
+
+    kp_xy: 0.5
+    kp_yaw: 1.0
+    max_vx: 0.5
+    max_vy: 0.5
+    max_dyaw: 0.5
+    control_rate: 50.0
+    enable_control: false
+    tf_topic: "/tf"
+    control_topic: "/lidar_nav_control"
+    enable_topic: "/quad/logistics_nav_enable"
+
+/quad/task_manager_node:
+  ros__parameters:
+    # obstacle: 障碍赛流程；logistics: 任务赛取放物块流程
+    # mission_mode: "obstacle"
+    mission_mode: "logistics"
+    # 机械臂配置
+    manipulation:
+      command_topic: "/manipulator/cmd"        # 机械臂管理节点命令话题；类型 std_msgs/UInt8
+      init_on_logistics_start: true            # true 时每次进入任务赛 LOGISTICS_NAV 前发布一次初始化命令
+      init_cmd: 0                              # 机械臂初始化/低层待机命令值；任务赛开始时发布一次
+      lift_standby_cmd: 4                      # 左右看预扫描完成后，机械臂抬起到导航待机姿态的命令值
+      place_low_after_init: false              # 0 命令已进入低层待机；false 可避免启动时触发完整低层放置流程
+      init_to_place_low_wait_s: 1.0            # 初始化命令发布后，进入低位左右看预扫描前的等待时间，单位 s
+      after_place_low_wait_s: 2.0              # 仅 place_low_after_init=true 时生效：发布低层放置命令后的等待时间，单位 s
+      lift_standby_wait_s: 1.0                 # 左右看完成并发布抬臂命令后，恢复正式导航前的等待时间，单位 s
+      pickup_cmd: 1                            # 取物块 GRAB 命令值；到达 PICKUP 点并站稳后发布一次
+      place_low_cmd: 2                         # 低层放置 PLACE_LOW；dropoff_idx < dropoff_high_layer_min_index 时使用
+      place_high_cmd: 3                        # 高层放置 PLACE_HIGH；dropoff_idx >= dropoff_high_layer_min_index 时使用
+      dropoff_high_layer_min_index: 4          # 与 lidar_nav dropoff_layer_stride 一致：前 4 个放货点下层，后 4 个上层
+      pickup_wait_s: 4.0                       # 发布取物块命令后等待机械臂完成的超时兜底，单位 s
+      dropoff_wait_s: 4.0                      # 发布低层/高层放置命令后等待机械臂完成的时间，单位 s
+      pre_stand_wait_s: 0.0                 # 到达取/放点并暂停导航后的静止等待；取货/低层放货后直接机械臂，高层放货后切站立
+      arm_cmd_settle_s: 0.4                  # 等待机体 cmd_vel 归零的超时上限，单位 s；归零后发布机械臂命令，此阶段也接收 result
+      stand_settle_s: 0.3                      # 高层放货：切到 FIXED_STAND 后等待站稳再触发机械臂，单位 s
+      rl_settle_s: 0.15                        # 高层放货：切回 RL_MOVE 后等待步态稳定再恢复导航，单位 s
+      lower_state_timeout_s: 3.0               # 等待底层状态切换的超时时间；超时后会重发 UP_DOWN/ENTER_RL，单位 s
+      suction_retry_max: 3                     # 吸取失败最大重试次数；超过后跳过当前方块
+
+    # 视觉对准偏移 
+    #【左右偏置，前后偏置，yaw偏置】参考相机系的话[向左为正，向前为正，左转为正]
+    # 即为二维码在相机正前方700mm处
+    default_offset: [0.0, 0.0, 0.0]
+    # --- 特定任务 ID 配置 ---
+    # 格式: [target_dist_x, target_dist_y, target_yaw]
+    # 程序会自动加载 tasks.task_3, tasks.task_4, tasks.task_5
+    tasks: 
+    # TODO
+      # 任务 1：矮杆
+      # 准备位置设定为 700mm
+      task_5: [0.0, 600.0, 0.0]
+      # 任务 2：位控
+      # 可能需要离墙稍远一点点（如 800mm）以保证跳跃空间
+      task_2: [104.0, 660.0, 0.04]
+    
+    # 动作时间配置 (在此处修改即可生效，无需重新编译)
+
+    policy_timers:
+      prep: 1.5
+      action: 1.0
+      buffer: 1.0
+      recover: 1.5
+
+    # 复杂动作的时间参数 (execute_complex_task - 如跳跃)
+    task_timers:
+      prep: 2.0
+      action: 3.5
+      buffer: 1.5
+      recover: 2.0
+
+/quad/pos_control_node:
+  ros__parameters:
+    kp_hip: 0.03
+    kp_thigh: 0.03
+    kp_calf: 0.03
+    kd_hip: 3.0
+    kd_thigh: 3.0
+    kd_calf: 3.0
+    pos_stand: [
+      0.1, -1.0, 1.4,
+      0.1, -1.0, 1.4,
+      0.1, -0.8, 1.45,
+      0.1, -0.8, 1.45
+
+      # 0.0, 0.0, 0.0, 
+      # 0.0, 0.0, 0.0,
+      # 0.0, 0.0, 0.0,
+      # 0.0, 0.0, 0.0
+    ]
+    pos_down: [
+      0.0, 0.0, 0.0, 
+      0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0
+    ]
+    pos_creep: [
+      0.3, -0.4, 0.6,
+      0.3, -0.4, 0.6,
+      0.3, -0.4, 0.6,
+      0.3, -0.4, 0.6,
+    ]
+    pos_kneel_crawl: [
+      0.0, -1.1, 0.8,
+      0.0, -1.1, 0.8,
+      0.0, -1.1, 0.8,
+      0.0, -1.1, 0.8
+    ]
+    
+    
+/quad/rl_control_node:
+  ros__parameters:
+    # kp_hip: 0.03
+    # kp_thigh: 0.03
+    # kp_calf: 0.03
+    # kd_hip: 2.0
+    # kd_thigh: 2.0
+    # kd_calf: 2.0
+    kp_hip: 0.018
+    kp_thigh: 0.018
+    kp_calf: 0.018
+    kd_hip: 0.6
+    kd_thigh: 0.6
+    kd_calf: 0.6
+    # kp_hip: 0.015
+    # kp_thigh: 0.015
+    # kp_calf: 0.015
+    # kd_hip: 0.75
+    # kd_thigh: 0.75
+    # kd_calf: 0.75
+    default_angles_trot: [
+      0.1, -0.8, 1.4,
+      0.1, -0.8, 1.4,
+      0.1, -0.8, 1.4,
+      0.1, -0.8, 1.4
+    ]
+    default_angles_creep: [
+      0.3, -0.4, 0.6,
+      0.3, -0.4, 0.6,
+      0.3, -0.4, 0.6,
+      0.3, -0.4, 0.6,
+    ]
+    default_angles_upstair: [
+      0.1, -0.8, 1.4,
+      0.1, -0.8, 1.4,
+      0.1, -0.8, 1.4,
+      0.1, -0.8, 1.4
+    ]
+    default_angles_kneel_crawl: [
+      0.0, -1.1, 0.7,
+      0.0, -1.1, 0.7,
+      0.0, -1.1, 0.7,
+      0.0, -1.1, 0.7
+    ]
+/quad/rknn_quad_node:
+  ros__parameters:
+    trot_model_path: 
+      "/home/cat/hitcrt_quad_ws/src/inference/rknn_quad_node/models/black_0603.rknn"
+    creep_model_path:
+      "/home/cat/hitcrt_quad_ws/src/inference/rknn_quad_node/models/creep.rknn"
+    upstair_model_path:
+      "/home/cat/hitcrt_quad_ws/src/inference/rknn_quad_node/models/trot_best.rknn"
+    # input_data_path: "src/inference/rknn_quad_node/logs/obs.txt"
+    # inference_rate: 50.0

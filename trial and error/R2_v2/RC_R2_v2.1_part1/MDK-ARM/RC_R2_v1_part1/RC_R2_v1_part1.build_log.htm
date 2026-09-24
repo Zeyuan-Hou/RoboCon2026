@@ -1,0 +1,161 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: ¦ÌVision V5.39.0.0
+Copyright (C) 2023 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: 0 0, 0, LIC=50D7S-LXPES-8Y2VV-PMEFA-L62JB-H2QEY
+ 
+Tool Versions:
+Toolchain:       MDK-ARM Professional  Version: 5.39.0.0
+Toolchain Path:  D:\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin
+C Compiler:      Armcc.exe V5.06 update 7 (build 960)
+Assembler:       Armasm.exe V5.06 update 7 (build 960)
+Linker/Locator:  ArmLink.exe V5.06 update 7 (build 960)
+Library Manager: ArmAr.exe V5.06 update 7 (build 960)
+Hex Converter:   FromElf.exe V5.06 update 7 (build 960)
+CPU DLL:         SARMCM3.DLL V5.39.0.0
+Dialog DLL:      DCM.DLL V1.17.5.0
+Target DLL:      Segger\JL2CM3.dll V2.99.43.0
+Dialog DLL:      TCM.DLL V1.56.4.0
+ 
+<h2>Project:</h2>
+D:\git repository\RoboCon2026\RoboCon2026\R2_v2\RC_R2_v2.1_part1\MDK-ARM\RC_R2_v1_part1.uvprojx
+Project File Date:  04/12/2026
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 7 (build 960)', folder: 'D:\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin'
+Build target 'RC_R2_v1_part1'
+compiling global.declare.c...
+..\bsp\global.declare.c(69): warning:  #188-D: enumerated type mixed with another type
+  FOOT foot = {.foot_state = 255, .foot_up_lv1 = UP11, .foot_up_lv2 = UP21, .foot_down_lv1 = DOWN11, .foot_down_lv2 = DOWN21, .up_tor_feedforward_flag = 0, .down_tor_feedforward_flag = 0, .up_foot_circle_count = 0, .runtime_flag = 0, .runtime = 0};
+..\bsp\global.declare.c(97): warning:  #188-D: enumerated type mixed with another type
+  	.nav_state = 255,
+..\bsp\global.declare.c(115): warning:  #188-D: enumerated type mixed with another type
+  ACE_Manipulator ace = {.state = 255, .across = 0, .flag_ = 0, .path_inx = 255, .flag = 1, .flag__ = 0};
+..\bsp\global.declare.c(115): warning:  #188-D: enumerated type mixed with another type
+  ACE_Manipulator ace = {.state = 255, .across = 0, .flag_ = 0, .path_inx = 255, .flag = 1, .flag__ = 0};
+..\bsp\global.declare.c: 4 warnings, 0 errors
+compiling chassis.c...
+compiling can_bsp.c...
+..\bsp\can_bsp.c(109): warning:  #546-D: transfer of control bypasses initialization of:
+            variable "_position"  (declared at line 133)
+            variable "_velocity"  (declared at line 134)
+            variable "_torque"  (declared at line 135)
+            variable "_kp"  (declared at line 136)
+            variable "_kd"  (declared at line 137)
+      switch (data->cmd_)
+      ^
+..\bsp\can_bsp.c: 1 warning, 0 errors
+compiling go1_sdk.c...
+compiling j60_sdk.c...
+compiling algorithm.c...
+compiling stm32f4xx_it.c...
+../Core/Src/stm32f4xx_it.c(412): warning:  #223-D: function "Vision_Data_Deal" declared implicitly
+        Vision_Data_Deal(&vision_data_recieve);
+../Core/Src/stm32f4xx_it.c(495): warning:  #188-D: enumerated type mixed with another type
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
+../Core/Src/stm32f4xx_it.c: 2 warnings, 0 errors
+compiling NRF24L01.c...
+compiling motor_dji_sdk.c...
+compiling freertos.c...
+compiling main.c...
+compiling navigate.c...
+..\task\navigate.c(153): error:  #165: too few arguments in function call
+          PID_Calc_Angle(&nav.auto_path.pos_pid.w);
+..\task\navigate.c: 0 warnings, 1 error
+compiling locate.c...
+..\task\locate.c(5): warning:  #223-D: function "memcpy" declared implicitly
+      memcpy(&p_vision_data->x1, &vision_rec[1], 4);
+..\task\locate.c: 1 warning, 0 errors
+compiling action.c...
+..\task\action.c(76): warning:  #188-D: enumerated type mixed with another type
+                  foot.foot_state = decision_tree[ace.path_inx][2 * ace.across + 1];
+..\task\action.c(102): warning:  #188-D: enumerated type mixed with another type
+                  foot.foot_state = decision_tree[ace.path_inx][2 * ace.across + 1];
+..\task\action.c(128): warning:  #188-D: enumerated type mixed with another type
+                  foot.foot_state = decision_tree[ace.path_inx][2 * ace.across + 1];
+..\task\action.c(154): warning:  #188-D: enumerated type mixed with another type
+                  foot.foot_state = decision_tree[ace.path_inx][2 * ace.across + 1];
+..\task\action.c(175): warning:  #188-D: enumerated type mixed with another type
+                  foot.foot_state = decision_tree[ace.path_inx][2 * ace.across + 1];
+..\task\action.c: 5 warnings, 0 errors
+compiling monitor.c...
+..\bsp\monitor.c(33): warning:  #223-D: function "abs" declared implicitly
+      if (abs(diff) < range) *error = 1;
+..\bsp\monitor.c: 1 warning, 0 errors
+compiling auto_path.c...
+..\task\auto_path.c(91): warning:  #223-D: function "memset" declared implicitly
+  	memset(&Path_Point, 0, sizeof(PATH_POINT));
+..\task\auto_path.c(199): warning:  #1-D: last line of file ends without a newline
+  }
+..\task\auto_path.c: 2 warnings, 0 errors
+compiling remote_control.c...
+..\task\remote_control.c(181): warning:  #188-D: enumerated type mixed with another type
+          Foot_Shorten();
+..\task\remote_control.c(181): warning:  #188-D: enumerated type mixed with another type
+          Foot_Shorten();
+..\task\remote_control.c(185): warning:  #188-D: enumerated type mixed with another type
+          Foot_Lengthen();
+..\task\remote_control.c(185): warning:  #188-D: enumerated type mixed with another type
+          Foot_Lengthen();
+..\task\remote_control.c: 4 warnings, 0 errors
+compiling foot.c...
+..\task\foot.c(21): warning:  #188-D: enumerated type mixed with another type
+          Foot_Shorten();
+..\task\foot.c(21): warning:  #188-D: enumerated type mixed with another type
+          Foot_Shorten();
+..\task\foot.c(65): warning:  #188-D: enumerated type mixed with another type
+              Foot_Shorten();
+..\task\foot.c(65): warning:  #188-D: enumerated type mixed with another type
+              Foot_Shorten();
+..\task\foot.c(187): warning:  #188-D: enumerated type mixed with another type
+                  Foot_Lengthen();
+..\task\foot.c(187): warning:  #188-D: enumerated type mixed with another type
+                  Foot_Lengthen();
+..\task\foot.c(264): warning:  #188-D: enumerated type mixed with another type
+                  Foot_Shorten();
+..\task\foot.c(264): warning:  #188-D: enumerated type mixed with another type
+                  Foot_Shorten();
+..\task\foot.c(288): warning:  #188-D: enumerated type mixed with another type
+              Foot_Shorten();
+..\task\foot.c(288): warning:  #188-D: enumerated type mixed with another type
+              Foot_Shorten();
+..\task\foot.c(396): warning:  #188-D: enumerated type mixed with another type
+              Foot_Lengthen();
+..\task\foot.c(396): warning:  #188-D: enumerated type mixed with another type
+              Foot_Lengthen();
+..\task\foot.c(453): warning:  #188-D: enumerated type mixed with another type
+                  Foot_Shorten();
+..\task\foot.c(453): warning:  #188-D: enumerated type mixed with another type
+                  Foot_Shorten();
+..\task\foot.c: 14 warnings, 0 errors
+"RC_R2_v1_part1\RC_R2_v1_part1.axf" - 1 Error(s), 34 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                http://www.keil.com/pack/ARM.CMSIS.5.9.0.pack
+                ARM::CMSIS@5.9.0
+                CMSIS (Common Microcontroller Software Interface Standard)
+   * Component: CORE Version: 5.6.0
+
+Package Vendor: Keil
+                https://www.keil.com/pack/Keil.STM32F4xx_DFP.3.0.0.pack
+                Keil::STM32F4xx_DFP@3.0.0
+                STMicroelectronics STM32F4 Series Device Support
+
+<h2>Collection of Component include folders:</h2>
+  ./RTE/_RC_R2_v1_part1
+  D:/Keil_v5/ARM/Packs/ARM/CMSIS/5.9.0/CMSIS/Core/Include
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ARM::CMSIS:CORE@5.6.0
+      Include file:  CMSIS/Core/Include/tz_context.h
+Target not created.
+Build Time Elapsed:  00:00:12
+</pre>
+</body>
+</html>

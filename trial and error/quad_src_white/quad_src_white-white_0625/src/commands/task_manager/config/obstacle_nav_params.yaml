@@ -1,0 +1,50 @@
+obstacle_nav_node:
+  ros__parameters:
+    target_frame: "camera_init"
+    child_frame: "aft_mapped"
+    tf_topic: "/tf"
+
+    # POINT_SEQUENCE or TRAJECTORY_SEQUENCE
+    navigation_mode: "POINT_SEQUENCE"
+
+    # POINT_SEQUENCE:
+    # Flat triples in lidar/world frame: [x1, y1, yaw1, x2, y2, yaw2, ...]
+    target_points: [
+      0.0, 1.5, 0.0,
+      0.0, 3.0, 0.0
+    ]
+
+    # TRAJECTORY_SEQUENCE:
+    # Each file contains absolute lidar/world-frame points: x y yaw
+    # trajectory_files:
+    #   - "/absolute/path/to/obstacle_1_nav.txt"
+    #   - "/absolute/path/to/obstacle_2_nav.txt"
+
+    position_tolerance: 0.10
+    yaw_tolerance: 0.10
+
+    kp_x: 0.6
+    kp_y: 1.0
+    kp_yaw: 0.8
+    kd_x: 0.0
+    kd_y: 0.0
+    kd_yaw: 0.0
+
+    max_vx: 0.45
+    max_vy: 0.35
+    max_dyaw: 0.6
+    final_yaw_align_distance: 0.25
+    approach_yaw_max_dyaw: 0.35
+    # In any LOCAL_PD phase, active yaw error above this threshold stops translation
+    # and uses yaw_only_max_dyaw for fast in-place turning.
+    yaw_only_threshold: 1.2
+    yaw_only_max_dyaw: 1.2
+    # Long straight acceleration only raises the forward linear.x limit when the
+    # robot is far from the target and already roughly facing the target point.
+    long_straight_distance_threshold: 1.0
+    long_straight_yaw_threshold: 0.25
+    long_straight_max_vx: 0.9
+    # Kept for old configs; use yaw_only_threshold for yaw-first turning.
+    yaw_first_threshold: 0.25
+
+    control_rate: 50.0

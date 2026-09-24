@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "bsp_can.h": "c",
+        "chassis.h": "c",
+        "gyro.h": "c",
+        "locate.h": "c",
+        "math.h": "c",
+        "remote_control.h": "c"
+    }
+}

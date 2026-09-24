@@ -1,0 +1,15 @@
+rc_r2_v1_part1\queue.o: ../Middlewares/Third_Party/FreeRTOS/Source/queue.c
+rc_r2_v1_part1\queue.o: D:\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin\..\include\stdlib.h
+rc_r2_v1_part1\queue.o: D:\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin\..\include\string.h
+rc_r2_v1_part1\queue.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
+rc_r2_v1_part1\queue.o: D:\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin\..\include\stddef.h
+rc_r2_v1_part1\queue.o: D:\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin\..\include\stdint.h
+rc_r2_v1_part1\queue.o: ../Core/Inc/FreeRTOSConfig.h
+rc_r2_v1_part1\queue.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
+rc_r2_v1_part1\queue.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h
+rc_r2_v1_part1\queue.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h
+rc_r2_v1_part1\queue.o: ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F/portmacro.h
+rc_r2_v1_part1\queue.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h
+rc_r2_v1_part1\queue.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h
+rc_r2_v1_part1\queue.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
+rc_r2_v1_part1\queue.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h

@@ -1,0 +1,194 @@
+/quad/aruco:
+  ros__parameters:
+  # 深度相机参数配置
+    camera_id: 5
+    # 深度相机参数配置
+    image_width: 640
+    image_height: 480
+    # image_width: 1920
+    # image_height: 1080
+    camera_fps: 60
+    camera_fourcc: "YUYV"
+    show_image: false
+    marker_size_mm: 168.0
+    # 深度相机参数配置
+    camera_fx: 618.1100463867188
+    camera_fy: 617.8013916015625
+    camera_cx: 326.69830322265625
+    camera_cy: 244.64666748046875
+    dist_coeffs: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+
+    # camera_fx: 1820.79702
+    # camera_fy: 1934.61330
+    # camera_cx: 1820.03191
+    # camera_cy: 1151.74155
+    # dist_coeffs: [-1.432,9.228,0.0,0.0,-1.907,-1.414,9.184,-1.774]
+
+/quad/lidar_pose_bridge_node:
+  ros__parameters:
+    target_frame: "camera_init"
+    child_frame: "aft_mapped"
+    map_frame: "map"
+    odom_frame: "odom"
+    base_frame: "base_link"
+    lidar_pose_topic: "/quad/lidar_pose_xyyaw"
+    odom_topic: "/quad/odom"
+    publish_nav2_tf: true
+    publish_odom: true
+    publish_rate_hz: 20.0
+    velocity_filter_alpha: 0.12
+    velocity_window_s: 0.30
+    linear_velocity_deadband: 0.03
+    angular_velocity_deadband: 0.02
+    max_linear_velocity: 1.0
+    max_angular_velocity: 1.50
+
+/quad/lidar_nav_demo_node:
+  ros__parameters:
+    target_frame: "camera_init"
+    child_frame: "aft_mapped"
+    
+    # 目标点序列 (waypoints) 按区域分类
+    # transition_front: 前排物资过渡点
+    # transition_back: 后排物资过渡点 (同时也是前往放置区的出入口)
+    # transition_mid: 前后排切换时的中间过渡点
+    # pickup_points: 物资区坐标点，格式为 [x1, y1, yaw1, is_front1, x2, y2, yaw2, is_front2...] 
+    #                注意：pickup增加了第4个元素，1.0表示前排，0.0表示后排
+    # dropoff_points: 放置区坐标点
+    transition_front: [0.0,  1.15, 0.0]
+    transition_back:  [1.0, -1.0, 0.0]
+    transition_mid:   [1.0,  0.0, 0.0]
+    
+    pickup_points: [
+      -1.20,  1.68,  1.57, 1.0,  # 取货点 1 (前排)
+      2.5, -1.0, -1.57, 0.0   # 取货点 2 (后排)
+    ]
+    
+    dropoff_points: [
+      2.0, -1.0, -1.57,  # 放货点 1
+      2.5, -1.0, -1.57   # 放货点 2
+    ]
+
+    wait_time: 3.0 # 到达 取货/放货 点后的等待时间(秒)
+    external_manipulation_enable: true
+
+    kp_xy: 0.5
+    kp_yaw: 1.0
+    max_vx: 0.5
+    max_vy: 0.5
+    max_dyaw: 0.5
+    control_rate: 50.0
+    enable_control: false
+    tf_topic: "/tf"
+    control_topic: "/lidar_nav_control"
+    enable_topic: "/quad/logistics_nav_enable"
+
+/quad/task_manager_node:
+  ros__parameters:
+    # obstacle: 障碍赛流程；logistics: 任务赛取放物块流程
+    # mission_mode: "obstacle"
+    mission_mode: "logistics"
+    # 机械臂配置
+    manipulation:
+      command_topic: "/manipulator/cmd"        # 机械臂管理节点命令话题；类型 std_msgs/UInt8
+      init_on_logistics_start: true            # true 时每次进入任务赛 LOGISTICS_NAV 前发布一次初始化命令
+      init_cmd: 0                              # 机械臂初始化/低层待机命令值；任务赛开始时发布一次
+      lift_standby_cmd: 4                      # 左右看预扫描完成后，机械臂抬起到导航待机姿态的命令值
+      place_low_after_init: false              # 0 命令已进入低层待机；false 可避免启动时触发完整低层放置流程
+      init_to_place_low_wait_s: 1.0            # 初始化命令发布后，进入低位左右看预扫描前的等待时间，单位 s
+      after_place_low_wait_s: 2.0              # 仅 place_low_after_init=true 时生效：发布低层放置命令后的等待时间，单位 s
+      lift_standby_wait_s: 1.0                 # 左右看完成并发布抬臂命令后，恢复正式导航前的等待时间，单位 s
+      pickup_cmd: 1                            # 取物块 GRAB 命令值；到达 PICKUP 点并站稳后发布一次
+      place_low_cmd: 2                         # 低层放置 PLACE_LOW；dropoff_idx < dropoff_high_layer_min_index 时使用
+      place_high_cmd: 3                        # 高层放置 PLACE_HIGH；dropoff_idx >= dropoff_high_layer_min_index 时使用
+      dropoff_high_layer_min_index: 4          # 与 lidar_nav dropoff_layer_stride 一致：前 4 个放货点下层，后 4 个上层
+      pickup_wait_s: 4.0                       # 发布取物块命令后等待机械臂完成的超时兜底，单位 s
+      dropoff_wait_s: 4.0                      # 发布低层/高层放置命令后等待机械臂完成的时间，单位 s
+      pre_stand_wait_s: 0.0                 # 到达取/放点并暂停导航后的静止等待；取货/低层放货后直接机械臂，高层放货后切站立
+      arm_cmd_settle_s: 0.4                  # 等待机体 cmd_vel 归零的超时上限，单位 s；归零后发布机械臂命令，此阶段也接收 result
+      stand_settle_s: 0.3                      # 高层放货：切到 FIXED_STAND 后等待站稳再触发机械臂，单位 s
+      rl_settle_s: 0.15                        # 高层放货：切回 RL_MOVE 后等待步态稳定再恢复导航，单位 s
+      lower_state_timeout_s: 3.0               # 等待底层状态切换的超时时间；超时后会重发 UP_DOWN/ENTER_RL，单位 s
+      suction_retry_max: 3                     # 吸取失败最大重试次数；超过后跳过当前方块
+
+/quad/pos_control_node:
+  ros__parameters:
+    kp_hip: 2.5
+    kp_thigh: 2.5
+    kp_calf: 2.5
+    kd_hip: 0.05
+    kd_thigh: 0.05
+    kd_calf: 0.05
+    pos_stand: [
+      -0.0, 0.8, 1.25,
+      -0.0, 0.8, 1.25,
+      -0.0, 0.8, 1.25,
+      -0.0, 0.8, 1.25,
+
+      # 0.0, 0.0, 0.0, 
+      # 0.0, 0.0, 0.0,
+      # 0.0, 0.0, 0.0,
+      # 0.0, 0.0, 0.0
+    ]
+    pos_down: [
+      0.0, 0.0, 0.0, 
+      0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0
+    ]
+    pos_creep: [
+      -0.0, 0.2, 0.3,
+      -0.0, 0.2, 0.3,
+      -0.0, 0.2, 0.3,
+      -0.0, 0.2, 0.3
+    ]
+    pos_kneel_crawl: [
+      -0.0, 1.2, 0.7,
+      -0.0, 1.2, 0.7,
+      -0.0, 1.2, 0.7,
+      -0.0, 1.2, 0.7,
+    ]
+/quad/rl_control_node:
+  ros__parameters:
+    kp_hip: 0.85
+    kp_thigh: 0.85
+    kp_calf: 0.85
+    kd_hip: 0.02
+    kd_thigh: 0.02
+    kd_calf: 0.02
+    default_angles_trot: [
+      -0.0, 0.7, 1.1,
+      -0.0, 0.7, 1.1,
+      -0.0, 0.7, 1.1,
+      -0.0, 0.7, 1.1
+    ]
+    default_angles_creep: [
+      0.4, 0.2, 0.2,
+      0.4, 0.2, 0.2,
+      0.4, 0.2, 0.2,
+      0.4, 0.2, 0.2,
+    ]
+    default_angles_upstair: [
+      -0.0, 0.7, 1.3,
+      -0.0, 0.7, 1.3,
+      -0.0, 0.7, 1.3,
+      -0.0, 0.7, 1.3
+    ]
+    default_angles_kneel_crawl: [
+      -0.0, 1.2, 0.7,
+      -0.0, 1.2, 0.7,
+      -0.0, 1.2, 0.7,
+      -0.0, 1.2, 0.7,
+    ]
+/quad/rknn_quad_node:
+  ros__parameters:
+    trot_model_path: 
+      "/home/cat/hitcrt_quad2026_ws/src/inference/rknn_quad_node/models/white_0622_task.rknn"
+    creep_model_path:
+      "/home/cat/hitcrt_quad2026_ws/src/inference/rknn_quad_node/models/white_creep.rknn"
+    upstair_model_path:
+      "/home/cat/hitcrt_quad2026_ws/src/inference/rknn_quad_node/models/white_0424_upstair.rknn"
+    kneel_crawl_model_path:
+      "/home/cat/hitcrt_quad2026_ws/src/inference/rknn_quad_node/models/white_kneel_crawl.rknn"
+    # input_data_path: "src/inference/rknn_quad_node/logs/obs.txt"
+    # inference_rate: 50.0

@@ -1,0 +1,37 @@
+#ifndef _VALVE_H
+#define _VALVE_H
+
+void ValveCtrl(void);
+void ValveAllStart(void);
+void ValveAllClose(void);
+
+/*气动端口宏定义 */
+#define VALVE1 	0x0001  //0000 0001
+#define VALVE2 	0x0002  //0000 0010
+#define VALVE3 	0x0004 
+#define VALVE4 	0x0008 
+#define VALVE5 	0x0010
+#define VALVE6 	0x0020
+
+
+/*气阀控制，通道数1-16*/
+#define VALVE_1_OPEN   	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET)
+#define VALVE_1_CLOSE  	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET)
+
+#define VALVE_2_OPEN   	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET)
+#define VALVE_2_CLOSE  	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET)
+
+#define VALVE_3_OPEN   	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_SET)
+#define VALVE_3_CLOSE  	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_RESET)
+
+#define VALVE_4_OPEN   	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_SET)
+#define VALVE_4_CLOSE  	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_RESET)
+
+#define VALVE_5_OPEN   	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET)
+#define VALVE_5_CLOSE  	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET)
+
+#define VALVE_6_OPEN   	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_SET)
+#define VALVE_6_CLOSE  	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_RESET)
+
+
+#endif

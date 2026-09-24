@@ -1,0 +1,4 @@
+sequence_id,trigger_s,trigger_x,trigger_y,trigger_yaw,start_time,end_time,duration_s,steps_json,repeat_on_rewind
+0,25.486661,-8.165226,-2.496176,3.134069,5.987173,10.725483,0.300000,"[{""delay_s"":0.0,""event_code"":21,""event_name"":""POLICY_KNEEL_CRAWL""}]",true
+1,36.179803,-1.931484,1.748762,-1.547489,76.891136,78.723410,7.500000,"[{""delay_s"":0.0,""event_code"":2,""event_name"":""STAND""},{""delay_s"":1.0,""event_code"":2,""event_name"":""STAND""},{""delay_s"":2.0,""event_code"":7,""event_name"":""JUMP""}]",true
+2,39.705603,-0.063437,0.048193,-3.033702,89.703435,90.642796,2.000000,"[{""delay_s"":0.0,""event_code"":2,""event_name"":""STAND""},{""delay_s"":1.0,""event_code"":2,""event_name"":""STAND""}]",true

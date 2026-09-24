@@ -1,0 +1,3 @@
+新建cpp节点，完成TASK_BRIDGE_CROSS任务。
+输入输出接口与工作流程同lidar_nav_demo_node.cpp 雷达走直线任务的流程和接口。
+不同之处在于要与状态机即task_manager_node.cpp 中的状态机进行交互，实现任务的切换和状态的更新。可以参考已完成的任务实现。要求进入TASK_BRIDGE_CROSS任务时通过QR_RECOGNITION任务识别到桥后，切换到TASK_BRIDGE_CROSS状态。或者接受到话题调试指令后，切换到TASK_BRIDGE_CROSS状态。要求在TASK_BRIDGE_CROSS状态下，首先切换到RL状态，实现雷达走直线任务。任务完成后，切换到TASK_IDLE状态。

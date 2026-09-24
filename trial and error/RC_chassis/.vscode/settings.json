@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "remote_control.h": "c",
+        "auto_path.h": "c"
+    }
+}

@@ -1,0 +1,17 @@
+global_planner_node:
+  ros__parameters:
+    resolution: 0.05
+    heuristic_weight: 1.0
+
+local_planner_node:
+  ros__parameters:
+    max_vel: 0.5
+    max_omega: 1.0
+    sim_time: 2.0
+    dt: 0.1
+    v_samples: 10
+    w_samples: 20
+    w_path: 1.0
+    w_obstacle: 2.0
+    w_goal: 1.0
+    w_speed: 0.5

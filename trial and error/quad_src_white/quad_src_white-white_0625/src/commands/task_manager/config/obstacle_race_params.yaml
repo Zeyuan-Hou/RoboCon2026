@@ -1,0 +1,854 @@
+# 障碍赛专用参数文件
+#
+# 作用：
+# - 完整障碍赛 launch 和二维码伺服调试 launch 共用本文件。
+# - 障碍赛导航点、二维码视觉伺服、障碍动作策略、障碍顺序都在这里调。
+# - 通用硬件、RL、RKNN、IMU、基础控制等参数仍放在 src/config/quad_run_cfg.yaml。
+#
+# 使用建议：
+# - 默认保持 obstacle_sequence.enabled=false + navigation_mode="POINT_SEQUENCE"，走旧流程。
+# - 若要启用 YAML 表驱动障碍顺序，需要同时设置：
+#   1. /**.obstacle_sequence.enabled: true
+#   2. /quad/obstacle_nav_node.navigation_mode: "EXTERNAL_TARGET"
+# - 单独调试某个障碍时，可把 order 临时改成只包含一个槽位，例如 [bridge_a]。
+#
+# obstacle_sequence 支持三类导航点混排：
+# - 非障碍点：is_obstacle=false，只导航到 nav_target，到点后进入下一个点。
+# - 雷达判断点：is_obstacle=true 且 require_qr=false、require_visual_servo=false，
+#   到雷达点后直接按 action 执行障碍动作。
+# - 视觉判读点：is_obstacle=true 且 require_qr=true、require_visual_servo=true，
+#   到雷达点后先 QR 校验，再视觉伺服，最后执行 action。
+# 兼容旧配置：action!="skip" 且不写这些开关时，默认按视觉判读点处理。
+
+/**:
+  ros__parameters:
+    obstacle_sequence:
+    ###TODO
+      enabled: true
+      # enabled: false
+      # order: [start_transit, bridge_a_radar, pole, sand, crawl, slope, bridge_b, stairs, wall]
+      # order: [start_transit,pole_transit,end_transit]
+      # order: [stairs,wall,end_transit]
+      order: [start_transit,pole,sand,crawl,slope,bridge_a,bridge_b,stairs,wall,end_transit]
+      # order: [bridge_b,stairs,wall,end_transit]
+
+      # 非障碍点：高墙 jump 后切回 POLICY_TROT，再导航回该近原点点位。
+      end_transit:
+        action: "skip"
+        is_obstacle: false
+        require_qr: false
+        require_visual_servo: false
+        nav_target: [-0.04, 0.01, -3.12]
+      start_transit:
+        action: "skip"
+        is_obstacle: false
+        require_qr: false
+        require_visual_servo: false
+        nav_target: [-0.04, 0.01, 0.02]
+      start_transit_back:
+        action: "skip"
+        is_obstacle: false
+        require_qr: false
+        require_visual_servo: false
+        nav_target: [-0.04, 0.01, -3.12]
+
+      bridge_a2stairs:
+        action: "path"
+        is_obstacle: true
+        require_qr: false
+        require_visual_servo: false
+        nav_target: [-7.38, -2.18, 0.07]
+      crawl_transit:
+        action: "skip"
+        is_obstacle: false
+        require_qr: false
+        require_visual_servo: false
+        nav_target: [1.37, -0.36, -2.98]
+      slope_transit:
+        action: "skip"
+        is_obstacle: false
+        require_qr: false
+        require_visual_servo: false
+        nav_target: [-0.57, -2.59, 1.60]
+      pole_transit:
+        action: "skip"
+        is_obstacle: false
+        require_qr: false
+        require_visual_servo: false
+        nav_target: [0.44, 1.93, -1.52]
+
+      # 雷达判断点示例：到点后直接执行 action，不做 QR 和视觉伺服。
+      # bridge_a_radar:
+      #   action: "line"
+      #   is_obstacle: true
+      #   require_qr: false
+      #   require_visual_servo: false
+      #   nav_target: [0.0, 0.0, 0.0]
+
+      # 视觉判读点示例：先到雷达点，再校验 QR task_id，视觉伺服到精确起点，最后执行 action。
+      # wall_visual:
+      #   action: "wall"
+      #   is_obstacle: true
+      #   require_qr: true
+      #   require_visual_servo: true
+      #   expected_task_id: 8
+      #   nav_target: [0.0, 0.0, 0.0]
+      #   visual_offset: [0.0, 1200.0, 0.0]
+
+      # 1 绕杆：导航到起始点 -> QR 校验 task_id=1 -> 视觉伺服 -> path_profiles.pole 路径跟踪。
+      pole:
+        action: "path"
+        is_obstacle: true
+        require_qr: false
+        require_visual_servo: false
+        expected_task_id: 1
+        nav_target: [0.44, 1.93, -1.52]
+        visual_offset: [158.89, 1067.05, 5.27]
+
+      # 2 沙坑：导航到起始点 -> QR 校验 task_id=2 -> 视觉伺服 -> 切上楼梯策略 -> path_profiles.sand 路径跟踪 -> 切回小跑策略。
+      sand:
+        action: "path"
+        is_obstacle: true
+        require_qr: false
+        require_visual_servo: false
+        expected_task_id: 2
+        nav_target: [3.50, 0.25, 0.08]
+        visual_offset: [0.0, 1200.0, 0.0]
+        # path_policy 只对 action="path" 生效：
+        # - trot：默认小跑策略直接回放路径。
+        # - upstair：先切 POLICY_UPSTAIR，确认底层策略进入后再回放路径。
+        path_policy: "upstair"
+        # restore_policy 只对 action="path" 生效：
+        # - none：路径结束后直接进入下一步。
+        # - trot：路径结束后先切回 POLICY_TROT，再进入下一步。
+        restore_policy: "trot"
+
+      # 3 矮杆：导航到起始点 -> QR 校验 task_id=3 -> 视觉伺服 -> 匍匐策略闭环前进。
+      crawl:
+        action: "crawl"
+        is_obstacle: true
+        require_qr: false
+        require_visual_servo: false
+        expected_task_id: 3
+        nav_target: [1.44, -1.92, 1.62]
+        visual_offset: [118.42, 1899.24, 0.0]
+
+      # 4 斜坡：导航到起始点 -> QR 校验 task_id=4 -> 视觉伺服 -> path_profiles.slope 路径跟踪。
+      slope:
+        action: "path"
+        is_obstacle: true
+        require_qr: false
+        require_visual_servo: false
+        expected_task_id: 4
+        nav_target: [-0.57, -2.59, 1.60]
+        visual_offset: [0.0, 1200.0, 0.0]
+
+      # 5 木桥 A：导航到起始点 -> path_profiles.bridge_a 轨迹跟踪。
+      bridge_a:
+        action: "path"
+        is_obstacle: true
+        require_qr: false
+        require_visual_servo: false
+        expected_task_id: 5
+        nav_target: [-4.89, -2.04, 1.62]
+        visual_offset: [0.0, 3900.00, 0.0]
+        # [-14.70,1389.96,-7.0]
+
+
+      # 6 木桥 B：导航到起始点 -> QR 校验 task_id=6 -> 视觉伺服
+      # -> 切跪姿爬行策略 -> path_profiles.bridge_b 路径跟踪 -> 切回小跑策略。
+      bridge_b:
+        action: "path"
+        is_obstacle: true
+        require_qr: false
+        require_visual_servo: false
+        expected_task_id: 6
+        nav_target: [-8.25, -2.35, -3.14]
+        visual_offset: [416.29, 1032.14, 10.0]
+        path_policy: "kneel_crawl"
+        restore_policy: "trot"
+
+      # 7 上楼梯：导航到起始点 -> 切上楼梯策略 -> path_profiles.stairs 路径跟踪 -> 切回小跑策略。
+      stairs:
+        action: "path"
+        is_obstacle: true
+        require_qr: false
+        require_visual_servo: false
+        expected_task_id: 7
+        nav_target: [-6.99, 1.62, -1.53]
+        visual_offset: [105.0, 1866.8, 5.12]
+        path_policy: "upstair"
+        restore_policy: "trot"
+
+      # 8 高墙：导航到起始点 -> QR 校验 task_id=8 -> 视觉伺服 -> JUMP 高墙动作。
+      # 若二维码规则为 marker_id = task_id + 18，则高墙对应 marker_id=26。
+      wall:
+        action: "wall"
+        is_obstacle: true
+        require_qr: false
+        require_visual_servo: false
+        expected_task_id: 8
+        nav_target: [-1.85, 1.8555, -1.57]
+        visual_offset: [0.0, 1200.0, 0.0]
+
+/quad/task_manager_node:
+  ros__parameters:
+    # 任务管理器模式。obstacle 表示障碍赛流程。
+    mission_mode: "obstacle"
+
+    # 底层策略切换类动作的时序参数，单位 s。
+    # prep/action/buffer/recover 分别表示准备、动作、缓冲、恢复阶段时长。
+    policy_timers:
+      prep: 0.5
+      action: 0.5
+      buffer: 1.0
+      recover: 0.5
+      confirm_settle: 0.12
+
+    # 复杂底层动作时序参数，单位 s。
+    # 当前主要用于沙坑跨步等需要底层动作序列的障碍。
+    task_timers:
+      prep: 2.0
+      action: 5.0
+      buffer: 1.5
+      recover: 2.0
+
+/quad/task_executor_node:
+  ros__parameters:
+
+    # TF 坐标设置。
+    # target_frame 是全局/雷达建图坐标系，child_frame 是机体雷达位姿坐标系。
+    target_frame: "camera_init"
+    child_frame: "aft_mapped"
+    tf_topic: "/tf"
+    # task_executor_node 发布给其他节点/调试工具使用的雷达平面位姿话题。
+    lidar_pose_topic: "/quad/lidar_pose_xyyaw"
+
+    # 旧直线闭环默认参数/兜底参数。
+    # sequence 模式下，木桥和楼梯优先使用 line_profiles 中按槽位区分的参数。
+    # yaw 单位 rad，距离单位 m，速度单位 m/s 或 rad/s。
+    straight_target_yaw: 0.0
+    straight_target_dist: 1.25
+    straight_max_speed: 0.5
+    straight_kp_y: 0.8
+    kp_xy: 0.5
+    kp_yaw: 1.0
+    max_vy: 0.5
+    max_dyaw: 0.5
+
+    # 二维码视觉伺服参数。
+    #
+    # 视觉坐标系约定：
+    # - x：二维码图像/视觉系向右为正，单位 mm。
+    # - y：向前为正，单位 mm。
+    # - yaw：顺时针为正，单位 deg。
+    #
+    # 控制参数：
+    # - tolerance_*：认为对准完成的误差阈值，x/y 单位 m，yaw 单位 rad。
+    # - kp_*：视觉伺服比例增益。
+    # - max_vx/max_vy/max_wz：速度限幅，单位 m/s、m/s、rad/s。
+    # - yaw_error_sign：yaw 误差方向修正；方向反了就改正负号。
+    #
+    # 目标偏置唯一来源：
+    # - 障碍赛二维码目标偏置只在 obstacle_sequence.<slot>.visual_offset 中配置。
+    # - EXTERNAL_TARGET 和 POINT_SEQUENCE 都按 expected_task_id 查同一张 obstacle_sequence 表。
+    # - default_offset 仅作为异常兜底，不作为障碍赛正常调参入口。
+    visual_servoing:
+      default_offset: [0.0, 700.0, 0.0]
+      tolerance_x_m: 0.08
+      tolerance_y_m: 0.08
+      tolerance_yaw_rad: 0.08
+      kp_x: 0.9
+      kp_y: 0.8
+      kp_yaw: 0.45
+      max_vx: 0.7
+      max_vy: 0.5
+      max_wz: 0.25
+      # 到点视觉伺服 linear.y 方向修正；只影响 VISUAL_SERVOING，不影响木桥 QR assist。
+      lateral_cmd_sign: 1.0
+      yaw_error_sign: -1.0
+
+    # 上下楼梯组合动作的两段 line profile 名称。
+    # active_segment=0 使用 up_segment，active_segment=1 使用 down_segment。
+    # 对应参数在 line_profiles.stairs_up / line_profiles.stairs_down。
+    stair_combo:
+      up_segment: "stairs_up"
+      down_segment: "stairs_down"
+
+    # 任务执行器旧参数/基础参数。
+    # 部分参数作为 sequence profiles 的默认值或非 sequence 流程的参数来源。
+    tasks:
+      # 上楼梯基础参数：雷达闭环直行直到达到目标前进距离。
+      # stair_use_current_yaw=true 表示以上楼梯开始时的 yaw 作为目标航向。
+      stair_duration: 5.0
+      stair_target_yaw: 0.0
+      stair_use_current_yaw: true
+      stair_forward_speed: 0.4
+      stair_kp_y: 1.35
+      stair_kp_yaw: 1.0
+      stair_max_vy: 0.25
+      stair_max_dyaw: 0.4
+      stair_max_distance: 4.0
+
+      # 矮杆匍匐参数：切 POLICY_CREEP 后，按雷达闭环向前走 crawl_target_dist。
+      # crawl_use_current_yaw=true 表示以匍匐开始时的 yaw 作为目标航向。
+      crawl_target_yaw: 0.0
+      crawl_use_current_yaw: true
+      crawl_forward_speed: 1.0
+      crawl_kp_y: 1.0
+      crawl_kp_yaw: 1.0
+      crawl_max_vy: 0.6
+      crawl_max_dyaw: 0.3
+      crawl_target_dist: 1.5
+
+      # 旧绕杆路径跟踪参数/默认参数。勿动，点跟踪模式参数
+      # trajectory 文件格式：time_sec x y yaw，坐标系为雷达/建图坐标系，yaw 单位 rad。
+      # sequence 模式下，pole/slope 优先使用 path_profiles 中对应槽位的参数。
+      pole_trajectory_file: "/home/cat/hitcrt_quad2026_ws/src/commands/task_manager/traj/pole2.txt"
+      pole_drive_mode: "forward"        # forward：车头沿路径；reverse：车头反向，倒车沿路径前进
+      pole_kp_x: 0.9
+      pole_kp_y: 0.75
+      pole_kp_yaw: 0.8
+      pole_kd_x: 0.0
+      pole_kd_y: 0.0
+      pole_kd_yaw: 0.0
+      pole_lin_vel_creep_min: 0.0
+      pole_lidar_offset_x: 0.0
+      pole_lidar_offset_y: 0.0
+      pole_max_vx: 0.5
+      pole_max_vy: 0.45
+      pole_max_dyaw: 0.7
+      pole_lookahead_distance: 0.35     # 几何前瞻距离，m
+      pole_finish_tolerance: 0.25       # 到终点距离小于该值且进度到末段则完成，m
+
+    # 路径跟踪 profile。 
+    #todo
+    # action="path" 的槽位会按 current_slot 选择不同 profile：
+    # - pole  -> path_profiles.pole
+    # - sand  -> path_profiles.sand
+    # - slope -> path_profiles.slope
+    # 如果槽位配置 path_policy="upstair" 或 "kneel_crawl"，状态机会先切对应策略，再使用这里的 profile 回放路径。
+    # trajectory_file 必须是绝对路径或运行环境可访问的路径。
+    # kp/kd 为路径跟踪控制参数，max_* 为速度限幅。
+    # pathtodo
+    path_profiles:
+      # 起点过渡路径跟踪参数。
+      start_transit:
+        # 轨迹文件，格式为每行: time_sec x y yaw。
+        # x/y/yaw 使用雷达建图坐标系，yaw 是雷达 yaw，不是车头 yaw。
+        # 必须使用实机可访问的绝对路径；换轨迹主要改这里。
+        trajectory_file: "/home/cat/hitcrt_quad2026_ws/src/commands/task_manager/traj/start1_smooth.txt"
+        # 行驶方向：
+        # - forward：沿轨迹前进，正常情况下 cmd_vel.linear.x 主要为正。
+        # - reverse：沿轨迹顺序倒车，不倒序读取轨迹；正常情况下 linear.x 主要为负。
+        drive_mode: "forward"
+        # PD 比例增益。
+        # kp_x：前后误差，跟不上参考点可增大，前后窜动则减小。
+        # kp_y：横向纠偏，偏离轨迹拉不回可增大，左右摆动则减小。
+        # kp_yaw：航向纠偏，车头跟不住可增大，角速度频繁打满/扭动则减小。
+        kp_x: 2.0
+        kp_y: 1.2
+        kp_yaw: 1.5
+        # PD 微分增益，默认 0 更稳。
+        # 只有降低 kp 后仍明显震荡时，再小幅尝试 0.02~0.05。
+        kd_x: 0.0
+        kd_y: 0.0
+        kd_yaw: 0.0
+        # 最小爬行速度，默认 0。
+        # 小误差下机器人卡住不动时再考虑开启；开启过大可能导致终点附近抖动。
+        lin_vel_creep_min: 0.0
+        # 雷达中心到期望控制点的补偿。
+        # 没有明确外参误差时保持 0；如果轨迹整体有固定前后/左右偏差再调。
+        lidar_offset_x: 0.0
+        lidar_offset_y: 0.0
+        # 速度限幅。
+        # max_vx：前后速度上限；max_vy：横向纠偏上限；max_dyaw：角速度上限。
+        # 初调先保守，确认方向和轨迹正确后再逐步放开。
+        max_vx: 0.75
+        max_vy: 0.5
+        max_dyaw: 0.8
+        # 前瞻距离，轨迹回放最关键参数。
+        # 变大：更平滑、抗噪，但弯道更容易切角。
+        # 变小：更贴线，但更容易抖动和频繁左右修正。
+        # 常用调整：抖动 0.35->0.45；切角 0.35->0.25。
+        lookahead_distance: 0.35
+        # 终点完成容差。
+        # 到终点不结束就临时放宽到 0.35；太早结束就收紧到 0.15~0.20。
+        finish_tolerance: 0.15
+
+      # 绕杆路径跟踪参数。
+      # 回放控制原理：
+      # - 轨迹文件只提供参考路径点，不按录制时间开环播放速度。
+      # - 控制器实时用雷达位姿找轨迹最近点，再沿轨迹前看 lookahead_distance 得到参考点。
+      # - 根据当前位姿到参考点的机体系误差做 PD，输出 /quad/cmd_vel。
+      # - 结束条件是路径进度接近末端，并且当前位置到轨迹终点距离小于 finish_tolerance。
+      pole:
+        # 轨迹文件，格式为每行: time_sec x y yaw。
+        # x/y/yaw 使用雷达建图坐标系，yaw 是雷达 yaw，不是车头 yaw。
+        # 必须使用实机可访问的绝对路径；换轨迹主要改这里。
+        trajectory_file: "/home/cat/hitcrt_quad2026_ws/src/commands/task_manager/traj/pole_final.txt"
+        # 行驶方向：
+        # - forward：沿轨迹前进，正常情况下 cmd_vel.linear.x 主要为正。
+        # - reverse：沿轨迹顺序倒车，不倒序读取轨迹；正常情况下 linear.x 主要为负。
+        drive_mode: "forward"
+        # PD 比例增益。
+        # kp_x：前后误差，跟不上参考点可增大，前后窜动则减小。
+        # kp_y：横向纠偏，偏离轨迹拉不回可增大，左右摆动则减小。
+        # kp_yaw：航向纠偏，车头跟不住可增大，角速度频繁打满/扭动则减小。
+        kp_x: 2.0
+        kp_y: 1.0
+        kp_yaw: 1.8
+        # PD 微分增益，默认 0 更稳。
+        # 只有降低 kp 后仍明显震荡时，再小幅尝试 0.02~0.05。
+        kd_x: 0.0
+        kd_y: 0.00001
+        kd_yaw: 0.00001
+        # 最小爬行速度，默认 0。
+        # 小误差下机器人卡住不动时再考虑开启；开启过大可能导致终点附近抖动。
+        lin_vel_creep_min: 0.0
+        # 雷达中心到期望控制点的补偿。
+        # 没有明确外参误差时保持 0；如果轨迹整体有固定前后/左右偏差再调。
+        lidar_offset_x: 0.0
+        lidar_offset_y: 0.0
+        # 速度限幅。
+        # max_vx：前后速度上限；max_vy：横向纠偏上限；max_dyaw：角速度上限。
+        # 初调先保守，确认方向和轨迹正确后再逐步放开。
+        max_vx: 0.75
+        max_vy: 0.5
+        max_dyaw: 0.8
+        # 前瞻距离，轨迹回放最关键参数。
+        # 变大：更平滑、抗噪，但弯道更容易切角。
+        # 变小：更贴线，但更容易抖动和频繁左右修正。
+        # 常用调整：抖动 0.35->0.45；切角 0.35->0.25。
+        lookahead_distance: 0.35
+        # 终点完成容差。
+        # 到终点不结束就临时放宽到 0.35；太早结束就收紧到 0.15~0.20。
+        finish_tolerance: 0.25
+      # 沙坑路径跟踪参数。当前 trajectory_file 是占位文件，实测后替换为沙坑轨迹。
+      sand:
+        trajectory_file: "/home/cat/hitcrt_quad2026_ws/src/commands/task_manager/traj/sand_final.txt"
+        drive_mode: "forward"
+        # daoche "reverse" "forward"
+        kp_x: 2.75
+        kp_y: 1.0
+        kp_yaw: 1.5
+        kd_x: 0.0
+        kd_y: 0.0
+        kd_yaw: 0.0
+        lin_vel_creep_min: 0.0
+        lidar_offset_x: 0.0
+        lidar_offset_y: 0.0
+        max_vx: 0.9
+        max_vy: 0.8
+        max_dyaw: 0.8
+        lookahead_distance: 0.35
+        finish_tolerance: 0.25
+      # 斜坡路径跟踪参数。当前 trajectory_file 是示例占位，实测后替换为斜坡轨迹。
+      slope:
+        # 轨迹文件，格式为每行: time_sec x y yaw。
+        # x/y/yaw 使用雷达建图坐标系，yaw 是雷达 yaw，不是车头 yaw。
+        # 必须使用实机可访问的绝对路径；换轨迹主要改这里。
+        trajectory_file: "/home/cat/hitcrt_quad2026_ws/src/commands/task_manager/traj/slope_final.txt"
+        # 行驶方向：
+        # - forward：沿轨迹前进，正常情况下 cmd_vel.linear.x 主要为正。
+        # - reverse：沿轨迹顺序倒车，不倒序读取轨迹；正常情况下 linear.x 主要为负。
+        drive_mode: "forward"
+        # PD 比例增益。
+        # kp_x：前后误差，跟不上参考点可增大，前后窜动则减小。
+        # kp_y：横向纠偏，偏离轨迹拉不回可增大，左右摆动则减小。
+        # kp_yaw：航向纠偏，车头跟不住可增大，角速度频繁打满/扭动则减小。
+        kp_x: 2.5
+        kp_y: 1.7
+        kp_yaw: 1.5
+        # PD 微分增益，默认 0 更稳。
+        # 只有降低 kp 后仍明显震荡时，再小幅尝试 0.02~0.05。
+        kd_x: 0.0
+        kd_y: 0.0
+        kd_yaw: 0.0
+        # 最小爬行速度，默认 0。
+        # 小误差下机器人卡住不动时再考虑开启；开启过大可能导致终点附近抖动。
+        lin_vel_creep_min: 0.0
+        # 雷达中心到期望控制点的补偿。
+        # 没有明确外参误差时保持 0；如果轨迹整体有固定前后/左右偏差再调。
+        lidar_offset_x: 0.0
+        lidar_offset_y: 0.0
+        # 速度限幅。
+        # max_vx：前后速度上限；max_vy：横向纠偏上限；max_dyaw：角速度上限。
+        # 初调先保守，确认方向和轨迹正确后再逐步放开。
+        max_vx: 0.8
+        max_vy: 0.5
+        max_dyaw: 0.8
+        # 前瞻距离，轨迹回放最关键参数。
+        # 变大：更平滑、抗噪，但弯道更容易切角。
+        # 变小：更贴线，但更容易抖动和频繁左右修正。
+        # 常用调整：抖动 0.35->0.45；切角 0.35->0.25。
+        lookahead_distance: 0.35
+        # 终点完成容差。
+        # 到终点不结束就临时放宽到 0.35；太早结束就收紧到 0.15~0.20。
+        finish_tolerance: 0.3
+      bridge_a:
+        # 轨迹文件，格式为每行: time_sec x y yaw。
+        # x/y/yaw 使用雷达建图坐标系，yaw 是雷达 yaw，不是车头 yaw。
+        # 必须使用实机可访问的绝对路径；换轨迹主要改这里。
+        trajectory_file: "/home/cat/hitcrt_quad2026_ws/src/commands/task_manager/traj/bridge_a_final.txt"
+        # 行驶方向：
+        # - forward：沿轨迹前进，正常情况下 cmd_vel.linear.x 主要为正。
+        # - reverse：沿轨迹顺序倒车，不倒序读取轨迹；正常情况下 linear.x 主要为负。
+        drive_mode: "forward"
+        # QR 辅助直线：
+        # - 路径跟踪仍负责 linear.x、路径进度和终点判定。
+        # - QR 辅助只覆盖 linear.y 和 angular.z，用 qr_assist_visual_offset 作为二维码目标偏置。
+        # - qr_assist_required=true 时，QR 丢失、超时或 task_type 不匹配会停车等待恢复。
+        # - qr_assist_visual_offset 格式为 [x_mm, y_mm, yaw_deg]，含义同 obstacle_sequence.bridge_a.visual_offset。
+        # - qr_assist_kp_y 越大，横向拉回越强；过大容易左右摆。
+        # - qr_assist_kp_yaw 越大，航向纠正越强；过大容易扭动。
+        # - max_vy/max_dyaw 是 QR 辅助输出限幅，先保守调，确认方向正确后再放开。
+        qr_assist_enabled: false
+        qr_assist_required: false
+        qr_assist_timeout_s: 1.0
+        qr_assist_kp_y: 0.5
+        qr_assist_kp_yaw: 0.35
+        qr_assist_max_vy: 0.6
+        qr_assist_max_dyaw: 0.3
+        qr_assist_visual_offset: [0.0, 1389.96, 0.0]
+        # [-14.70,1389.96,-7.0]
+        ##todo
+        # PD 比例增益。
+        # kp_x：前后误差，跟不上参考点可增大，前后窜动则减小。
+        # kp_y：横向纠偏，偏离轨迹拉不回可增大，左右摆动则减小。
+        # kp_yaw：航向纠偏，车头跟不住可增大，角速度频繁打满/扭动则减小。
+        kp_x: 2.5
+        kp_y: 1.4
+        kp_yaw: 2.0
+        # PD 微分增益，默认 0 更稳。
+        # 只有降低 kp 后仍明显震荡时，再小幅尝试 0.02~0.05。
+        kd_x: 0.0
+        kd_y: 0.0
+        kd_yaw: 0.0000
+        # 最小爬行速度，默认 0。
+        # 小误差下机器人卡住不动时再考虑开启；开启过大可能导致终点附近抖动。
+        lin_vel_creep_min: 0.0
+        # 雷达中心到期望控制点的补偿。
+        # 没有明确外参误差时保持 0；如果轨迹整体有固定前后/左右偏差再调。
+        lidar_offset_x: 0.0
+        # 过木桥实机机身偏右时给一个向左的固定补偿；负值会增大 linear.y(向左)修正。
+        lidar_offset_y: -0.1
+        # 速度限幅。
+        # max_vx：前后速度上限；max_vy：横向纠偏上限；max_dyaw：角速度上限。
+        # 初调先保守，确认方向和轨迹正确后再逐步放开。
+        max_vx: 0.65
+        max_vy: 0.45
+        max_dyaw: 0.8
+        # 前瞻距离，轨迹回放最关键参数。
+        # 变大：更平滑、抗噪，但弯道更容易切角。
+        # 变小：更贴线，但更容易抖动和频繁左右修正。
+        # 常用调整：抖动 0.35->0.45；切角 0.35->0.25。
+        lookahead_distance: 0.25
+        # 终点完成容差。
+        # 到终点不结束就临时放宽到 0.35；太早结束就收紧到 0.15~0.20。
+        finish_tolerance: 0.2
+      bridge_b:
+        # 木桥 B 路径跟踪参数。当前轨迹是基于原直线闭环距离生成的保守直线路径；
+        # 实测录制木桥 B 轨迹后主要替换 trajectory_file。
+        trajectory_file: "/home/cat/hitcrt_quad2026_ws/src/commands/task_manager/traj/bridge_b_final.txt"
+        drive_mode: "forward"
+        qr_assist_enabled: false
+        qr_assist_required: false
+        qr_assist_timeout_s: 1.0
+        qr_assist_kp_y: 0.5
+        qr_assist_kp_yaw: 0.35
+        qr_assist_max_vy: 0.5
+        qr_assist_max_dyaw: 0.3
+        qr_assist_visual_offset: [416.29, 1032.14, 10.0]
+        kp_x: 4.2
+        kp_y: 2.0
+        kp_yaw: 1.75
+        kd_x: 0.0
+        kd_y: 0.0
+        kd_yaw: 0.0
+        lin_vel_creep_min: 0.3
+        lidar_offset_x: 0.0
+        lidar_offset_y: 0.0
+        max_vx: 1.0
+        max_vy: 0.6
+        max_dyaw: 0.75
+        lookahead_distance: 0.25
+        finish_tolerance: 0.20
+      bridge_a2stairs:
+        # 轨迹文件，格式为每行: time_sec x y yaw。
+        # x/y/yaw 使用雷达建图坐标系，yaw 是雷达 yaw，不是车头 yaw。
+        # 必须使用实机可访问的绝对路径；换轨迹主要改这里。
+        trajectory_file: "/home/cat/hitcrt_quad2026_ws/src/commands/task_manager/traj/bridge_a2stairs1_smooth.txt"
+        # 行驶方向：
+        # - forward：沿轨迹前进，正常情况下 cmd_vel.linear.x 主要为正。
+        # - reverse：沿轨迹顺序倒车，不倒序读取轨迹；正常情况下 linear.x 主要为负。
+        drive_mode: "forward"
+        # PD 比例增益。
+        # kp_x：前后误差，跟不上参考点可增大，前后窜动则减小。
+        # kp_y：横向纠偏，偏离轨迹拉不回可增大，左右摆动则减小。
+        # kp_yaw：航向纠偏，车头跟不住可增大，角速度频繁打满/扭动则减小。
+        kp_x: 2.0
+        kp_y: 1.5
+        kp_yaw: 1.5
+        # PD 微分增益，默认 0 更稳。
+        # 只有降低 kp 后仍明显震荡时，再小幅尝试 0.02~0.05。
+        kd_x: 0.0
+        kd_y: 0.0
+        kd_yaw: 0.0
+        # 最小爬行速度，默认 0。
+        # 小误差下机器人卡住不动时再考虑开启；开启过大可能导致终点附近抖动。
+        lin_vel_creep_min: 0.0
+        # 雷达中心到期望控制点的补偿。
+        # 没有明确外参误差时保持 0；如果轨迹整体有固定前后/左右偏差再调。
+        lidar_offset_x: 0.0
+        lidar_offset_y: 0.0
+        # 速度限幅。
+        # max_vx：前后速度上限；max_vy：横向纠偏上限；max_dyaw：角速度上限。
+        # 初调先保守，确认方向和轨迹正确后再逐步放开。
+        max_vx: 0.75
+        max_vy: 0.5
+        max_dyaw: 0.8
+        # 前瞻距离，轨迹回放最关键参数。
+        # 变大：更平滑、抗噪，但弯道更容易切角。
+        # 变小：更贴线，但更容易抖动和频繁左右修正。
+        # 常用调整：抖动 0.35->0.45；切角 0.35->0.25。
+        lookahead_distance: 0.35
+        # 终点完成容差。
+        # 到终点不结束就临时放宽到 0.35；太早结束就收紧到 0.15~0.20。
+        finish_tolerance: 0.20
+      stairs:
+        # 轨迹文件，格式为每行: time_sec x y yaw。
+        # x/y/yaw 使用雷达建图坐标系，yaw 是雷达 yaw，不是车头 yaw。
+        # 必须使用实机可访问的绝对路径；换轨迹主要改这里。
+        trajectory_file: "/home/cat/hitcrt_quad2026_ws/src/commands/task_manager/traj/stairs_final.txt"
+        # 行驶方向：
+        # - forward：沿轨迹前进，正常情况下 cmd_vel.linear.x 主要为正。
+        # - reverse：沿轨迹顺序倒车，不倒序读取轨迹；正常情况下 linear.x 主要为负。
+        drive_mode: "forward"
+        # PD 比例增益。
+        # kp_x：前后误差，跟不上参考点可增大，前后窜动则减小。
+        # kp_y：横向纠偏，偏离轨迹拉不回可增大，左右摆动则减小。
+        # kp_yaw：航向纠偏，车头跟不住可增大，角速度频繁打满/扭动则减小。
+        kp_x: 2.5
+        kp_y: 1.75
+        # kp_y: 1.2
+        kp_yaw: 1.5
+        # PD 微分增益，默认 0 更稳。
+        # 只有降低 kp 后仍明显震荡时，再小幅尝试 0.02~0.05。
+        kd_x: 0.0
+        kd_y: 0.00001
+        kd_yaw: 0.00001
+        # 最小爬行速度，默认 0。
+        # 小误差下机器人卡住不动时再考虑开启；开启过大可能导致终点附近抖动。
+        lin_vel_creep_min: 0.0
+        # 雷达中心到期望控制点的补偿。
+        # 没有明确外参误差时保持 0；如果轨迹整体有固定前后/左右偏差再调。
+        lidar_offset_x: 0.0
+        lidar_offset_y: 0.0
+        # 速度限幅。
+        # max_vx：前后速度上限；max_vy：横向纠偏上限；max_dyaw：角速度上限。
+        # 初调先保守，确认方向和轨迹正确后再逐步放开。
+        max_vx: 0.75
+        max_vy: 0.5
+        max_dyaw: 0.7
+        # 前瞻距离，轨迹回放最关键参数。
+        # 变大：更平滑、抗噪，但弯道更容易切角。
+        # 变小：更贴线，但更容易抖动和频繁左右修正。
+        # 常用调整：抖动 0.35->0.45；切角 0.35->0.25。
+        lookahead_distance: 0.15
+        # 终点完成容差。
+        # 到终点不结束就临时放宽到 0.35；太早结束就收紧到 0.15~0.20。
+        finish_tolerance: 0.20
+
+    # 直线闭环 profile。
+    # action="line" 的槽位会按 current_slot 选择 profile：
+    # - bridge_a -> line_profiles.bridge_a
+    # - bridge_b -> line_profiles.bridge_b
+    # stair_combo 通过 stair_combo.up_segment/down_segment 选择 stairs_up/stairs_down。
+    # target_dist 单位 m，max_speed 单位 m/s，max_dyaw 单位 rad/s。
+    line_profiles:
+      # 木桥 A 直线闭环参数。
+      bridge_a:
+        target_dist: 2.45
+        max_speed: 0.4
+        kp_y: 0.15
+        kp_xy: 0.5
+        kp_yaw: 0.25
+        max_vy: 0.08
+        max_dyaw: 0.12
+      # 木桥 B 直线闭环参数，可与木桥 A 独立设置距离、速度和 PID。
+      bridge_b:
+        target_dist: 1.25
+        max_speed: 0.5
+        kp_y: 0.8
+        kp_xy: 0.5
+        kp_yaw: 1.0
+        max_vy: 0.5
+        max_dyaw: 0.5
+      # 上楼梯直线段参数。
+      stairs_up:
+        target_dist: 4.0
+        max_speed: 0.4
+        kp_y: 1.35
+        kp_xy: 0.5
+        kp_yaw: 1.0
+        max_vy: 0.25
+        max_dyaw: 0.4
+      # 下楼梯直线段参数。
+      stairs_down:
+        target_dist: 4.0
+        max_speed: 0.25
+        kp_y: 1.0
+        kp_xy: 0.5
+        kp_yaw: 1.0
+        max_vy: 0.25
+        max_dyaw: 0.4
+
+/quad/obstacle_nav_node:
+  ros__parameters:
+    # 障碍赛导航节点 TF 设置。
+    # target_frame 是全局/雷达建图坐标系，child_frame 是机体雷达位姿坐标系。
+    target_frame: "camera_init"
+    child_frame: "aft_mapped"
+    tf_topic: "/tf"
+
+    # 导航执行后端：
+    # - LOCAL_PD：旧版 TF 闭环 PD，直接发布 /quad/cmd_vel。
+    # - NAV2：作为 Nav2 NavigateToPose action 上位节点，成功后仍发布 nav_status。
+    # navigation_backend: "NAV2"
+    ##TODO
+    navigation_backend: "LOCAL_PD"
+
+    nav2_action_name: "/navigate_to_pose"
+    goal_frame_id: "map"
+    nav2_action_server_wait_s: 0.1
+    nav2_retry_period_s: 0.5
+
+    # 导航目标来源模式：
+    # - POINT_SEQUENCE：旧流程，直接按下面 target_points 固定点序列导航。
+    # - TRAJECTORY_SEQUENCE：按 trajectory_files 中的轨迹文件序列导航。
+    # - EXTERNAL_TARGET：由 task_manager_node 根据 obstacle_sequence.order 发布当前槽位 nav_target。
+    #
+    # 注意：
+    # - obstacle_sequence.enabled=false 时，通常保持 POINT_SEQUENCE。
+    # - obstacle_sequence.enabled=true 时，必须改成 EXTERNAL_TARGET，否则导航节点仍会按旧 target_points 自己走。
+    ###todo
+    # navigation_mode: "POINT_SEQUENCE"
+    navigation_mode: "EXTERNAL_TARGET"
+
+    # POINT_SEQUENCE 模式使用的固定导航点序列。
+    # 格式为扁平数组：[x1, y1, yaw1, x2, y2, yaw2, ...]
+    # 单位：x/y 为 m，yaw 为 rad，坐标系为雷达/建图坐标系。
+    target_points: [
+      # -0.725763, 0.951219, -0.043226
+      # point1
+      -0.17, 1.34, -0.006,
+      # point2
+      1.17, 2.54, 3.06
+      # #point3
+      # -2.26, 6.45, 3.129,
+      # #point4
+      # -3.716, 0.65, 1.467,
+    ]
+
+    # TRAJECTORY_SEQUENCE 模式使用的轨迹文件列表。
+    # 每个文件包含一串雷达/建图坐标系下的绝对点：x y yaw。
+    # trajectory_files:
+    #   - "/absolute/path/to/obstacle_1_nav.txt"
+    #   - "/absolute/path/to/obstacle_2_nav.txt"
+
+    # 到点判定阈值。
+    # position_tolerance 单位 m，yaw_tolerance 单位 rad。
+    position_tolerance: 0.1
+    yaw_tolerance: 0.10
+
+    # 导航到目标点时的 PD/P 控制参数。
+    # kp_* 越大响应越快但更容易震荡；kd_* 用于阻尼。
+    kp_x: 1.7
+    kp_y: 1.65
+    kp_yaw: 1.45
+    kd_x: 0.0001
+    kd_y: 0.08
+    kd_yaw: 0.05
+
+    # 导航速度限幅。
+    # max_vx/max_vy 单位 m/s，max_dyaw 单位 rad/s。
+    max_vx: 0.65
+    max_vy: 0.5
+    max_dyaw: 0.75
+
+    # LOCAL_PD 导航策略：
+    # - 距目标点较远时，边用 linear.x/y 朝目标点移动，边让车头朝目标点方向。
+    # - 距目标点小于 final_yaw_align_distance 后，开始对齐导航点配置的最终 yaw。
+    # - 进入 position_tolerance 后若 yaw 未达标，则停止平移，只原地调最终 yaw。
+    # - 任意阶段 active yaw 误差超过 yaw_only_threshold 时，只原地快速转 yaw。
+    # - 长直线且车头基本对准目标点时，linear.x 使用 long_straight_max_vx 前进上限。
+
+    # 距目标点小于该距离时，从“朝目标点方向”切换为“对齐 nav_target 最终 yaw”，单位 m。
+    final_yaw_align_distance: 0.25
+    # 远距离 approach 阶段的角速度上限，单位 rad/s；限制边走边转时的 yaw 速度。
+    approach_yaw_max_dyaw: 0.55
+    # active yaw 误差超过该阈值时，停止 linear.x/y，只原地快速转 yaw，单位 rad。
+    # active yaw：远距离阶段用 err_approach_yaw，近点/到点阶段用最终 err_yaw。
+    yaw_only_threshold: 1.2
+    # yaw_only/近点最终 yaw 对齐阶段的原地转向峰值上限，单位 rad/s。
+    yaw_only_max_dyaw: 0.95
+    # yaw 误差小于该阈值后按比例降低原地转向限幅，避免接近目标时过冲，单位 rad。
+    yaw_only_slowdown_threshold: 0.90
+    # angular.z 每秒最大变化量，单位 rad/s^2；限制从 0 瞬间打满导致姿态异常。
+    yaw_cmd_slew_rate: 1.2
+    # 距目标点大于该距离时，才允许进入长直线加速逻辑，单位 m。
+    long_straight_distance_threshold: 1.0
+    # 朝目标点方向 yaw 误差小于该阈值时，认为车头基本对准，可以加速直行，单位 rad。
+    long_straight_yaw_threshold: 0.15
+    # 长直线加速时 linear.x 使用的前进 P 增益；只在 long_straight 阶段替代普通 kp_x。
+    long_straight_kp_x: 2.2
+    # 长直线加速时 linear.x 的前进速度上限，单位 m/s；只放大前进，不放大倒退。
+    long_straight_max_vx: 0.75
+    # 兼容旧配置保留；当前 LOCAL_PD 使用 yaw_only_threshold 做“先原地转 yaw”，不再看这个值。
+    yaw_first_threshold: 0.25
+
+    # 台阶后去高墙起点的小段专用控制：
+    # 命中 enabled_slots 时不走通用点导航，而是先原地对齐 nav_target.yaw，再保持该 yaw 前进。
+    yaw_then_forward:
+      enabled_slots: ["wall"]
+      align_yaw_tolerance: 0.08
+      finish_yaw_tolerance: 0.07
+      forward_tolerance: 0.10
+      lateral_tolerance: 0.30
+      kp_yaw: 1.20
+      max_wz: 0.75
+      wz_slew_rate: 1.0
+      kp_forward: 1.2
+      max_vx: 0.7
+      kp_lateral: 1.2
+      max_vy: 0.6
+
+    # 导航控制频率，单位 Hz。
+    control_rate: 50.0
+
+/quad/task_bridge_cross_node:
+  ros__parameters:
+    # 旧/独立过桥节点参数。
+    # 当前障碍赛主流程优先使用 /quad/task_executor_node.line_profiles。
+    # 本段保留用于兼容旧节点或单独调试 task_bridge_cross_node。
+    target_frame: "camera_init"
+    child_frame: "aft_mapped"
+    tf_topic: "/tf"
+
+    # 旧过桥直线闭环参数。
+    # target_dist 单位 m，max_speed 单位 m/s，yaw 单位 rad。
+    straight_target_yaw: 0.0
+    straight_target_dist: 4.0
+    straight_max_speed: 0.5
+    straight_kp_y: 2.0
+
+    # 旧过桥 PID 和限幅参数。
+    # max_vy 单位 m/s，max_dyaw 单位 rad/s。
+    kp_xy: 0.5
+    kp_yaw: 1.0
+    max_vy: 0.5
+    max_dyaw: 0.5
+
+    # 旧过桥节点控制频率，单位 Hz。
+    control_rate: 50.0

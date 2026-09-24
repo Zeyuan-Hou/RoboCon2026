@@ -1,0 +1,10 @@
+.vscode
+build
+install
+log
+/src/inference/rknn_quad_node/logs
+.cursorignore
+*.zip
+*.log
+*.pyc
+maps/

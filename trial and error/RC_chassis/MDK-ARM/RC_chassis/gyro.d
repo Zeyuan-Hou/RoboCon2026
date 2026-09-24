@@ -1,0 +1,9 @@
+rc_chassis\gyro.o: ..\bsp\gyro.c
+rc_chassis\gyro.o: ..\bsp\gyro.h
+rc_chassis\gyro.o: ..\bsp\global_declare.h
+rc_chassis\gyro.o: D:\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin\..\include\stdint.h
+rc_chassis\gyro.o: D:\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin\..\include\stdbool.h
+rc_chassis\gyro.o: ..\bsp\algorithm.h
+rc_chassis\gyro.o: D:\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin\..\include\math.h
+rc_chassis\gyro.o: D:\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin\..\include\stddef.h
+rc_chassis\gyro.o: D:\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin\..\include\string.h

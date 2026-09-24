@@ -1,0 +1,3 @@
+sequence_id,trigger_s,trigger_x,trigger_y,trigger_yaw,start_time,end_time,duration_s,steps_json,repeat_on_rewind
+0,23.040733,-8.201507,-2.468683,1.705981,46.941278,50.482533,0.300000,"[{""delay_s"":0.0,""event_code"":21,""event_name"":""POLICY_KNEEL_CRAWL""}]",true
+1,34.305477,-1.902536,1.706126,2.303320,74.083126,74.083126,1.000000,"[{""delay_s"":0.0,""event_code"":2,""event_name"":""STAND""}]",true

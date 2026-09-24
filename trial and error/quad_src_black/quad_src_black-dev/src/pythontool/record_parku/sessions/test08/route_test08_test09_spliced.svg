@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="760" viewBox="0 0 1000 760">
+<defs><marker id="yaw-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,4 L0,8 Z" fill="#17becf"/></marker></defs>
+<rect width="100%" height="100%" fill="#fafafa"/>
+<text x="18" y="28" font-size="16" fill="#222">record_parku route.svg</text>
+<text x="18" y="48" font-size="12" fill="#555">points=241 length=4.743m events=12 yaw arrows=0.3m</text>
+<line x1="102.0" y1="705.0" x2="102.0" y2="55.0" stroke="#eeeeee" stroke-width="0.6"/>
+<line x1="154.5" y1="705.0" x2="154.5" y2="55.0" stroke="#eeeeee" stroke-width="0.6"/>
+<line x1="207.1" y1="705.0" x2="207.1" y2="55.0" stroke="#eeeeee" stroke-width="0.6"/>
+<line x1="259.7" y1="705.0" x2="259.7" y2="55.0" stroke="#e0e0e0" stroke-width="1.0"/>
+<line x1="312.2" y1="705.0" x2="312.2" y2="55.0" stroke="#eeeeee" stroke-width="0.6"/>
+<line x1="364.8" y1="705.0" x2="364.8" y2="55.0" stroke="#eeeeee" stroke-width="0.6"/>
+<line x1="417.4" y1="705.0" x2="417.4" y2="55.0" stroke="#eeeeee" stroke-width="0.6"/>
+<line x1="469.9" y1="705.0" x2="469.9" y2="55.0" stroke="#eeeeee" stroke-width="0.6"/>
+<line x1="522.5" y1="705.0" x2="522.5" y2="55.0" stroke="#e0e0e0" stroke-width="1.0"/>
+<line x1="575.1" y1="705.0" x2="575.1" y2="55.0" stroke="#eeeeee" stroke-width="0.6"/>
+<line x1="627.7" y1="705.0" x2="627.7" y2="55.0" stroke="#eeeeee" stroke-width="0.6"/>
+<line x1="680.2" y1="705.0" x2="680.2" y2="55.0" stroke="#eeeeee" stroke-width="0.6"/>
+<line x1="732.8" y1="705.0" x2="732.8" y2="55.0" stroke="#eeeeee" stroke-width="0.6"/>
+<line x1="785.4" y1="705.0" x2="785.4" y2="55.0" stroke="#e0e0e0" stroke-width="1.0"/>
+<line x1="837.9" y1="705.0" x2="837.9" y2="55.0" stroke="#eeeeee" stroke-width="0.6"/>
+<line x1="890.5" y1="705.0" x2="890.5" y2="55.0" stroke="#eeeeee" stroke-width="0.6"/>
+<line x1="943.1" y1="705.0" x2="943.1" y2="55.0" stroke="#eeeeee" stroke-width="0.6"/>
+<line x1="55.0" y1="661.9" x2="945.0" y2="661.9" stroke="#eeeeee" stroke-width="0.6"/>
+<line x1="55.0" y1="613.0" x2="945.0" y2="613.0" stroke="#e0e0e0" stroke-width="1.0"/>
+<line x1="55.0" y1="564.1" x2="945.0" y2="564.1" stroke="#eeeeee" stroke-width="0.6"/>
+<line x1="55.0" y1="515.3" x2="945.0" y2="515.3" stroke="#eeeeee" stroke-width="0.6"/>
+<line x1="55.0" y1="466.4" x2="945.0" y2="466.4" stroke="#eeeeee" stroke-width="0.6"/>
+<line x1="55.0" y1="417.5" x2="945.0" y2="417.5" stroke="#eeeeee" stroke-width="0.6"/>
+<line x1="55.0" y1="368.6" x2="945.0" y2="368.6" stroke="#e0e0e0" stroke-width="1.0"/>
+<line x1="55.0" y1="319.8" x2="945.0" y2="319.8" stroke="#eeeeee" stroke-width="0.6"/>
+<line x1="55.0" y1="270.9" x2="945.0" y2="270.9" stroke="#eeeeee" stroke-width="0.6"/>
+<line x1="55.0" y1="222.0" x2="945.0" y2="222.0" stroke="#eeeeee" stroke-width="0.6"/>
+<line x1="55.0" y1="173.1" x2="945.0" y2="173.1" stroke="#eeeeee" stroke-width="0.6"/>
+<line x1="55.0" y1="124.3" x2="945.0" y2="124.3" stroke="#e0e0e0" stroke-width="1.0"/>
+<line x1="55.0" y1="75.4" x2="945.0" y2="75.4" stroke="#eeeeee" stroke-width="0.6"/>
+<line x1="785.4" y1="705.0" x2="785.4" y2="55.0" stroke="#777" stroke-width="1.6"/>
+<text x="791.4" y="68.0" font-size="12" fill="#555">y (m)</text>
+<line x1="55.0" y1="613.0" x2="945.0" y2="613.0" stroke="#777" stroke-width="1.6"/>
+<text x="903.0" y="606.0" font-size="12" fill="#555">x (m)</text>
+<text x="251.7" y="627.0" font-size="10" fill="#777">-2</text>
+<text x="514.5" y="627.0" font-size="10" fill="#777">-1</text>
+<text x="777.4" y="627.0" font-size="10" fill="#777">0</text>
+<text x="791.4" y="371.6" font-size="10" fill="#777">1</text>
+<text x="791.4" y="127.3" font-size="10" fill="#777">2</text>
+<polyline points="785.1,582.8 785.3,577.9 785.4,573.0 785.8,568.2 786.4,563.3 787.1,558.5 788.2,553.7 789.5,549.0 791.1,544.3 792.8,539.7 794.5,535.0 796.0,530.4 797.3,525.6 798.5,520.9 799.4,516.1 800.2,511.2 800.8,506.4 801.1,501.5 801.3,496.6 801.4,491.7 801.4,486.8 801.4,482.0 801.5,477.1 801.5,472.2 801.5,467.3 801.4,462.4 801.2,457.5 801.0,452.6 800.8,447.8 800.5,442.9 800.3,438.0 800.1,433.1 800.0,428.2 800.0,423.3 800.0,418.5 800.2,413.6 800.3,408.7 800.5,403.8 800.7,398.9 800.8,394.0 800.9,389.1 801.0,384.3 801.2,379.4 801.4,374.5 801.8,369.6 802.3,364.7 802.9,359.9 803.6,355.1 804.4,350.2 805.4,345.4 806.4,340.6 807.4,335.8 808.5,331.0 809.6,326.3 810.6,321.5 811.6,316.7 812.5,311.9 813.2,307.0 813.6,302.1 813.5,297.3 812.7,292.4 811.3,287.8 809.0,283.3 806.3,279.2 803.2,275.2 800.1,271.3 796.6,267.7 792.8,264.2 789.0,260.9 785.2,257.5 781.3,254.2 777.5,250.8 773.7,247.5 769.9,244.1 766.0,240.8 762.1,237.6 757.9,234.6 753.7,231.6 749.5,228.7 745.4,225.7 741.2,222.8 737.0,219.8 732.8,216.9 728.5,214.0 724.2,211.3 719.9,208.5 715.5,205.7 711.2,202.9 706.9,200.1 702.6,197.4 698.3,194.6 694.0,191.6 689.8,188.7 690.9,187.2 691.7,192.0 691.9,196.9 692.2,201.7 692.6,206.6 693.1,211.5 693.6,216.4 693.8,221.2 693.8,226.1 693.5,231.0 692.2,235.7 688.4,233.3 683.4,231.7 679.0,229.2 675.4,225.7 672.2,221.8 669.2,217.7 666.5,213.6 663.9,209.3 661.3,205.0 658.8,200.8 656.2,196.5 653.2,192.5 649.9,188.7 646.2,185.2 642.0,182.3 637.4,180.0 632.5,178.3 627.3,177.5 622.1,177.2 616.8,177.3 611.6,177.8 606.4,178.5 601.2,179.2 596.0,180.0 590.8,180.8 585.6,181.6 580.4,182.4 575.2,183.2 570.0,183.8 564.8,184.4 559.6,184.9 554.3,185.3 549.1,185.6 543.8,185.9 538.6,186.2 533.3,186.4 528.1,186.7 522.8,186.9 517.6,187.2 512.3,187.4 507.1,187.7 501.9,188.3 497.5,188.8 492.3,188.6 487.0,188.9 481.8,189.6 476.7,190.5 471.5,191.5 466.4,192.3 461.9,191.5 466.2,189.1 471.4,188.3 476.6,188.5 473.4,190.0 468.2,190.2 462.9,190.0 457.7,189.8 452.4,189.7 447.2,189.9 441.9,190.2 436.7,190.9 431.5,191.8 426.4,192.8 421.2,193.8 416.0,194.5 410.8,194.8 405.5,194.8 400.3,194.7 395.0,194.6 389.8,194.4 384.5,194.1 379.3,193.6 374.1,193.1 368.9,192.4 363.7,191.8 358.4,191.3 353.2,190.9 347.9,190.7 342.7,190.5 337.5,189.6 332.5,188.2 327.3,187.8 322.0,187.8 316.8,187.9 311.5,188.2 306.3,188.5 301.0,188.8 295.8,189.4 290.6,190.2 285.7,191.8 283.1,195.3 287.7,197.4 292.9,198.2 290.6,198.9 285.3,198.4 280.2,197.2 275.0,196.9 269.7,197.2 264.5,197.5 259.3,197.8 254.0,198.0 248.7,198.2 243.5,198.3 238.2,198.4 233.0,198.6 227.7,199.0 222.5,199.6 217.3,200.3 212.1,200.9 206.9,201.5 201.7,201.9 196.4,202.3 191.2,202.6 186.4,203.0 190.6,206.0 194.8,208.9 199.0,211.9 203.1,214.9 207.3,217.8 211.5,220.8 215.7,223.7 220.3,225.7 225.6,226.3 230.8,226.8 236.0,227.7 241.0,228.9 246.1,230.2 251.3,231.0 256.5,230.7 260.6,227.9 260.6,223.2 257.8,219.1 254.5,215.3 251.8,211.1 249.2,206.9 246.2,202.8 243.5,203.0" fill="none" stroke="#222" stroke-width="2.5"/>
+<line x1="758.9" y1="582.2" x2="760.0" y2="538.2" stroke="#17becf" stroke-width="1.3" marker-end="url(#yaw-arrow)"/>
+<line x1="774.1" y1="508.1" x2="780.2" y2="464.5" stroke="#17becf" stroke-width="1.3" marker-end="url(#yaw-arrow)"/>
+<line x1="774.0" y1="439.0" x2="772.0" y2="395.1" stroke="#17becf" stroke-width="1.3" marker-end="url(#yaw-arrow)"/>
+<line x1="776.2" y1="362.2" x2="781.0" y2="318.5" stroke="#17becf" stroke-width="1.3" marker-end="url(#yaw-arrow)"/>
+<line x1="787.1" y1="297.6" x2="777.0" y2="254.6" stroke="#17becf" stroke-width="1.3" marker-end="url(#yaw-arrow)"/>
+<line x1="745.4" y1="256.4" x2="708.8" y2="228.5" stroke="#17becf" stroke-width="1.3" marker-end="url(#yaw-arrow)"/>
+<line x1="682.8" y1="214.3" x2="644.5" y2="188.6" stroke="#17becf" stroke-width="1.3" marker-end="url(#yaw-arrow)"/>
+<line x1="664.5" y1="249.5" x2="626.2" y2="223.7" stroke="#17becf" stroke-width="1.3" marker-end="url(#yaw-arrow)"/>
+<line x1="624.5" y1="201.8" x2="577.7" y2="195.4" stroke="#17becf" stroke-width="1.3" marker-end="url(#yaw-arrow)"/>
+<line x1="551.8" y1="209.9" x2="504.6" y2="212.8" stroke="#17becf" stroke-width="1.3" marker-end="url(#yaw-arrow)"/>
+<line x1="476.7" y1="215.5" x2="430.2" y2="223.8" stroke="#17becf" stroke-width="1.3" marker-end="url(#yaw-arrow)"/>
+<line x1="428.8" y1="217.3" x2="382.3" y2="225.4" stroke="#17becf" stroke-width="1.3" marker-end="url(#yaw-arrow)"/>
+<line x1="343.5" y1="214.9" x2="296.3" y2="211.7" stroke="#17becf" stroke-width="1.3" marker-end="url(#yaw-arrow)"/>
+<line x1="289.5" y1="223.3" x2="242.2" y2="222.8" stroke="#17becf" stroke-width="1.3" marker-end="url(#yaw-arrow)"/>
+<line x1="214.4" y1="225.3" x2="167.4" y2="230.5" stroke="#17becf" stroke-width="1.3" marker-end="url(#yaw-arrow)"/>
+<line x1="236.7" y1="202.9" x2="283.3" y2="210.3" stroke="#17becf" stroke-width="1.3" marker-end="url(#yaw-arrow)"/>
+<circle cx="785.1" cy="582.8" r="8" fill="#2ca02c"/>
+<text x="795.1" y="574.8" font-size="12">START s=0</text>
+<circle cx="243.5" cy="203.0" r="8" fill="#d62728"/>
+<text x="253.5" y="195.0" font-size="12">END s=4.74</text>
+<circle cx="617.3" cy="177.3" r="6" fill="#1f77b4" stroke="#111"/>
+<text x="625.3" y="181.3" font-size="11" fill="#222">POLICY_UPSTAIR s=2.44</text>
+<circle cx="538.7" cy="186.1" r="6" fill="#1f77b4" stroke="#111"/>
+<text x="546.7" y="190.1" font-size="11" fill="#222">POLICY_CREEP s=2.74</text>
+<circle cx="510.9" cy="187.5" r="6" fill="#1f77b4" stroke="#111"/>
+<text x="518.9" y="191.5" font-size="11" fill="#222">POLICY_TROT s=2.85</text>
+<circle cx="364.9" cy="191.9" r="6" fill="#6f42c1" stroke="#111"/>
+<text x="372.9" y="195.9" font-size="11" fill="#222">STAND s=3.53</text>
+<circle cx="362.8" cy="191.7" r="6" fill="#6f42c1" stroke="#111"/>
+<text x="370.8" y="195.7" font-size="11" fill="#222">STAND s=3.53</text>
+<circle cx="361.4" cy="191.6" r="6" fill="#1f77b4" stroke="#111"/>
+<text x="369.4" y="195.6" font-size="11" fill="#222">POLICY_KNEEL_CRAWL s=3.54</text>
+<circle cx="361.3" cy="191.5" r="6" fill="#6f42c1" stroke="#111"/>
+<text x="369.3" y="195.5" font-size="11" fill="#222">STAND s=3.54</text>
+<circle cx="358.2" cy="191.3" r="6" fill="#2ca02c" stroke="#111"/>
+<text x="366.2" y="195.3" font-size="11" fill="#222">ENTER_RL s=3.55</text>
+<circle cx="284.1" cy="195.7" r="6" fill="#1f77b4" stroke="#111"/>
+<text x="292.1" y="199.7" font-size="11" fill="#222">POLICY_TROT s=3.85</text>
+<circle cx="292.7" cy="198.3" r="6" fill="#1f77b4" stroke="#111"/>
+<text x="300.7" y="202.3" font-size="11" fill="#222">POLICY_UPSTAIR s=3.89</text>
+<circle cx="199.3" cy="202.1" r="6" fill="#1f77b4" stroke="#111"/>
+<text x="207.3" y="206.1" font-size="11" fill="#222">POLICY_TROT s=4.25</text>
+<circle cx="260.6" cy="223.6" r="6" fill="#6f42c1" stroke="#111"/>
+<text x="268.6" y="227.6" font-size="11" fill="#222">STAND s=4.63</text>
+</svg>

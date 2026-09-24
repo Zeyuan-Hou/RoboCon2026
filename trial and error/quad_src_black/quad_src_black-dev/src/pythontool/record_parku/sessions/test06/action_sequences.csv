@@ -1,0 +1,4 @@
+sequence_id,trigger_s,trigger_x,trigger_y,trigger_yaw,start_time,end_time,duration_s,steps_json,repeat_on_rewind
+0,2.756768,-1.119939,1.875087,1.623599,6.229778,8.060079,1.830301,"[{""delay_s"":0.0,""event_code"":2,""event_name"":""STAND""},{""delay_s"":0.699131,""event_code"":2,""event_name"":""STAND""},{""delay_s"":1.830301,""event_code"":7,""event_name"":""JUMP""}]",true
+1,4.169522,-1.847864,1.851602,1.637741,15.189453,17.448913,2.259460,"[{""delay_s"":0.0,""event_code"":2,""event_name"":""STAND""},{""delay_s"":1.28047,""event_code"":2,""event_name"":""STAND""},{""delay_s"":2.25946,""event_code"":4,""event_name"":""ENTER_RL""}]",true
+2,41.490389,0.054662,0.008407,-3.090666,82.499486,97.231847,14.732361,"[{""delay_s"":0.0,""event_code"":2,""event_name"":""STAND""},{""delay_s"":14.732361,""event_code"":2,""event_name"":""STAND""}]",true

@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="720" viewBox="0 0 900 720">
+<rect width="100%" height="100%" fill="#f8f8f8"/>
+<text x="18" y="28" font-size="16" fill="#222">pickup_order.svg</text>
+<text x="18" y="48" font-size="12" fill="#555">number = actual pickup/dropoff order</text>
+<line x1="55" y1="665" x2="55" y2="55" stroke="#dddddd" stroke-width="1"/>
+<line x1="134" y1="665" x2="134" y2="55" stroke="#dddddd" stroke-width="1"/>
+<line x1="213" y1="665" x2="213" y2="55" stroke="#dddddd" stroke-width="1"/>
+<line x1="292" y1="665" x2="292" y2="55" stroke="#dddddd" stroke-width="1"/>
+<line x1="371" y1="665" x2="371" y2="55" stroke="#dddddd" stroke-width="1"/>
+<line x1="450" y1="665" x2="450" y2="55" stroke="#dddddd" stroke-width="1"/>
+<line x1="529" y1="665" x2="529" y2="55" stroke="#dddddd" stroke-width="1"/>
+<line x1="608" y1="665" x2="608" y2="55" stroke="#dddddd" stroke-width="1"/>
+<line x1="687" y1="665" x2="687" y2="55" stroke="#dddddd" stroke-width="1"/>
+<line x1="766" y1="665" x2="766" y2="55" stroke="#dddddd" stroke-width="1"/>
+<line x1="845" y1="665" x2="845" y2="55" stroke="#dddddd" stroke-width="1"/>
+<line x1="55" y1="665" x2="845" y2="665" stroke="#dddddd" stroke-width="1"/>
+<line x1="55" y1="597.222" x2="845" y2="597.222" stroke="#dddddd" stroke-width="1"/>
+<line x1="55" y1="529.444" x2="845" y2="529.444" stroke="#dddddd" stroke-width="1"/>
+<line x1="55" y1="461.667" x2="845" y2="461.667" stroke="#dddddd" stroke-width="1"/>
+<line x1="55" y1="393.889" x2="845" y2="393.889" stroke="#dddddd" stroke-width="1"/>
+<line x1="55" y1="326.111" x2="845" y2="326.111" stroke="#dddddd" stroke-width="1"/>
+<line x1="55" y1="258.333" x2="845" y2="258.333" stroke="#dddddd" stroke-width="1"/>
+<line x1="55" y1="190.556" x2="845" y2="190.556" stroke="#dddddd" stroke-width="1"/>
+<line x1="55" y1="122.778" x2="845" y2="122.778" stroke="#dddddd" stroke-width="1"/>
+<line x1="55" y1="55" x2="845" y2="55" stroke="#dddddd" stroke-width="1"/>
+<circle cx="348.95" cy="436.051" r="7" fill="#ffffff" stroke="#999999" stroke-width="1"/>
+<text x="357.95" y="428.051" font-size="10" fill="#777">P4/S0</text>
+<circle cx="416.774" cy="436.152" r="7" fill="#ffffff" stroke="#999999" stroke-width="1"/>
+<text x="425.774" y="428.152" font-size="10" fill="#777">P5/S1</text>
+<circle cx="484.599" cy="436.253" r="7" fill="#ffffff" stroke="#999999" stroke-width="1"/>
+<text x="493.599" y="428.253" font-size="10" fill="#777">P6/S2</text>
+<circle cx="552.423" cy="436.354" r="7" fill="#ffffff" stroke="#999999" stroke-width="1"/>
+<text x="561.423" y="428.354" font-size="10" fill="#777">P7/S3</text>
+<circle cx="552.306" cy="494.544" r="7" fill="#ffffff" stroke="#999999" stroke-width="1"/>
+<text x="561.306" y="486.544" font-size="10" fill="#777">P3/S4</text>
+<circle cx="484.002" cy="564.391" r="7" fill="#ffffff" stroke="#999999" stroke-width="1"/>
+<text x="493.002" y="556.391" font-size="10" fill="#777">P2/S5</text>
+<circle cx="416.656" cy="494.342" r="7" fill="#ffffff" stroke="#999999" stroke-width="1"/>
+<text x="425.656" y="486.342" font-size="10" fill="#777">P1/S6</text>
+<circle cx="348.832" cy="494.241" r="7" fill="#ffffff" stroke="#999999" stroke-width="1"/>
+<text x="357.832" y="486.241" font-size="10" fill="#777">P0/S7</text>
+<polyline fill="none" stroke="#222222" stroke-width="2.5" stroke-dasharray="5,5" points="484.002,564.391 348.95,436.051 552.423,436.354 484.599,436.253 416.774,436.152 416.656,494.342 552.306,494.544 348.832,494.241 "/>
+<circle cx="484.002" cy="564.391" r="15" fill="#d62728" stroke="#111111" stroke-width="2"/>
+<text x="484.002" y="569.391" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">1</text>
+<text x="502.002" y="582.391" font-size="11" fill="#222">P2 -> D0 red</text>
+<circle cx="348.95" cy="436.051" r="15" fill="#2ca02c" stroke="#111111" stroke-width="2"/>
+<text x="348.95" y="441.051" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">2</text>
+<text x="366.95" y="454.051" font-size="11" fill="#222">P4 -> D3 green</text>
+<circle cx="552.423" cy="436.354" r="15" fill="#888888" stroke="#111111" stroke-width="2"/>
+<text x="552.423" y="441.354" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">3</text>
+<text x="570.423" y="454.354" font-size="11" fill="#222">P7 -> D2 gray</text>
+<circle cx="484.599" cy="436.253" r="15" fill="#d62728" stroke="#111111" stroke-width="2"/>
+<text x="484.599" y="441.253" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">4</text>
+<text x="502.599" y="454.253" font-size="11" fill="#222">P6 -> D4 red</text>
+<circle cx="416.774" cy="436.152" r="15" fill="#1f77b4" stroke="#111111" stroke-width="2"/>
+<text x="416.774" y="441.152" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">5</text>
+<text x="434.774" y="454.152" font-size="11" fill="#222">P5 -> D1 blue</text>
+<circle cx="416.656" cy="494.342" r="15" fill="#2ca02c" stroke="#111111" stroke-width="2"/>
+<text x="416.656" y="499.342" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">6</text>
+<text x="434.656" y="512.342" font-size="11" fill="#222">P1 -> D7 green</text>
+<circle cx="552.306" cy="494.544" r="15" fill="#888888" stroke="#111111" stroke-width="2"/>
+<text x="552.306" y="499.544" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">7</text>
+<text x="570.306" y="512.544" font-size="11" fill="#222">P3 -> D6 gray</text>
+<circle cx="348.832" cy="494.241" r="15" fill="#1f77b4" stroke="#111111" stroke-width="2"/>
+<text x="348.832" y="499.241" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">8</text>
+<text x="366.832" y="512.241" font-size="11" fill="#222">P0 -> D5 blue</text>
+</svg>

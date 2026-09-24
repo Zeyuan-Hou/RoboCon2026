@@ -1,0 +1,12 @@
+install/
+build/
+log/
+.vscode
+*.zip
+.claude/
+.codex/
+.claude/
+*.log
+*.txt
+*.png
+*.pyc

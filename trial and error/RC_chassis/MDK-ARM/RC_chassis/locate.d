@@ -1,0 +1,10 @@
+rc_chassis\locate.o: ..\bsp\locate.c
+rc_chassis\locate.o: ..\bsp\locate.h
+rc_chassis\locate.o: ..\bsp\global_declare.h
+rc_chassis\locate.o: D:\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin\..\include\stdint.h
+rc_chassis\locate.o: D:\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin\..\include\stdbool.h
+rc_chassis\locate.o: ..\bsp\algorithm.h
+rc_chassis\locate.o: D:\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin\..\include\math.h
+rc_chassis\locate.o: ..\bsp\gyro.h
+rc_chassis\locate.o: D:\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin\..\include\stddef.h
+rc_chassis\locate.o: D:\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin\..\include\string.h

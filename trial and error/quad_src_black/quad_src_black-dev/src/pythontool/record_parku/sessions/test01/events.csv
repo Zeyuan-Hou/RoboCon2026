@@ -1,0 +1,4 @@
+event_id,time,s,x,y,yaw,event_code,event_name,source,repeat_on_rewind
+0,23.013468,10.990929,-7.357206,-2.220744,1.668492,2,STAND,cmd_evt,true
+1,23.593448,11.021494,-7.344153,-2.211305,1.675450,2,STAND,cmd_evt,true
+2,29.402034,11.171748,-7.344828,-2.204337,1.682843,2,STAND,cmd_evt,true

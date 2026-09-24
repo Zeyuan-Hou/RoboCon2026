@@ -1,0 +1,257 @@
+# AUTO-GENERATED from waypoints.yaml + anchor geometry.
+# Regenerate: python3 src/pythontool/generate_field_waypoints.py --viz
+# Non-pickup/dropoff params copied from waypoints.yaml; edit that file.
+/quad/lidar_nav_demo_node:
+  ros__parameters:
+    # ================= 坐标系与 TF =================
+    target_frame: "camera_init"
+    child_frame: "aft_mapped"
+    lidar_offset_x: 0.05   # 雷达在机体系下的前向偏移，m
+    lidar_offset_y: 0.0    # 雷达在机体系下的左向偏移，m
+
+    # ================= 话题与使能 =================
+    enable_control: false
+    tf_topic: "/tf"
+    control_topic: "/lidar_nav_control"
+    enable_topic: "/quad/logistics_nav_enable"
+    control_rate: 100.0    # 控制循环频率 Hz；物流/直线/AUTO_PARKU 共用
+
+    # ================= A* 路径与隔离带走廊 =================
+    # 雷达系：x 向右，y 向前
+    add_point_file: ""
+    path_viz_dir: "/home/cat/hitcrt_quad_ws/maps/lidar_nav_path_viz"
+    astar_neighbor_radius: 1.0
+    # add_point.txt 中 y 在此范围内的节点按 neighbor_radius 连通形成走廊
+    isolation_band_y_min: 0.9
+    isolation_band_y_max: 3.8
+    pickup_rear_staging_y_min: 3.5
+    pickup_front_staging_y_max: 1.5   # 前排 pickup_y>此值：A* 直达 PICKUP；≤此值：经 staging 两段
+    rear_corridor_yaw_free_y_max: 4.5   # y∈[pickup_rear_staging_y_min, 此值] 内 TRANSITION 不控 yaw
+    # 目标点 y∈[rear_exit_creep_y_min, rear_exit_creep_y_max] 时单独最小 vx/vy creep（走廊出口段）
+    rear_exit_creep_y_min: 3.5
+    rear_exit_creep_y_max: 4.1
+    rear_exit_forward_creep_min: 0.45
+    rear_exit_lateral_creep_min: 0.5
+
+    # ================= 固定过渡点 [x, y, yaw] =================
+    transition_front: [0.0, 1.12, 0.0]
+    transition_back:  [0.30, 4.18, 0.0]
+    transition_mid:   [0.15, 2.67, 0.0]
+    #  [1.0, 1.0, 0.0]   # transition_front 备选
+
+    # ================= 取放货点阵来源 =================
+    # 坐标系：x 向右，y 从启动区面向赛场（与 example_point.txt / 雷达图一致）
+    # false: 使用下方 pickup_points / dropoff_points（手工标注）
+    # true:  启动时从 field_generated_points_file 覆盖取放点（改此一项即可切换）
+    #        推荐 waypoints_generated.yaml；也可用 manip_points_generated.yaml（仅含取放点）
+    use_field_layout_generated_points: true
+    field_generated_points_file: "/home/cat/hitcrt_quad_ws/src/commands/lidar_nav_demo_cpp/config/waypoints_generated.yaml"
+    field_anchor_points_file: "/home/cat/hitcrt_quad_ws/src/commands/lidar_nav_demo_cpp/config/trajectories/example_point.txt"
+
+    # ================= 取货点 pickup_points =================
+    # 格式: [x, y, yaw, is_front, ...]；is_front: 1.0=前排, 0.0=后排
+    # AUTO-GENERATED pickup_points — edit example_point.txt anchors
+    # 雷达系 x=右、y=从启动区面向赛场；index 0~3=A1~A4, 4~7=B1~B4
+    pickup_points: [-1.2298, 2.7482, 3.139593, 1, -0.388733, 2.725421, 3.139593, 1, 0.4894, 1.8116, 0.0321, 1, 1.293401, 2.679862, 3.139593, 1, -1.207021, 3.589267, 3.139593, 0, -0.365954, 3.566488, 3.139593, 0, 0.475113, 3.543709, 3.139593, 0, 1.31618, 3.520929, 3.139593, 0]
+    #   [0] -1.2298, 2.7482, 3.139593, 1  A1 前排取货1
+    #   [1] -0.388733, 2.725421, 3.139593, 1  A2 前排取货2
+    #   [2] 0.4894, 1.8116, 0.0321, 1  A3 前排取货3 (startup anchor, 倒数第5行)
+    #   [3] 1.293401, 2.679862, 3.139593, 1  A4 前排取货4
+    #   [4] -1.207021, 3.589267, 3.139593, 0  B1 后排取货1
+    #   [5] -0.365954, 3.566488, 3.139593, 0  B2 后排取货2
+    #   [6] 0.475113, 3.543709, 3.139593, 0  B3 后排取货3
+    #   [7] 1.31618, 3.520929, 3.139593, 0  B4 后排取货4
+
+    # ================= 放货点 dropoff_points =================
+    # 格式: [x, y, yaw]；共 8 点 = 4 坑位 × 2 层
+    # AUTO-GENERATED dropoff_points — edit example_point.txt anchors
+    # index 0~3: 低层；4~7: 高层
+    dropoff_points: [-1.100351, 4.785694, 0.01125, -0.308758, 4.764255, 0.01125, 0.482834, 4.742816, 0.01125, 1.274426, 4.721376, 0.01125, -1.100351, 4.810694, 0.01125, -0.308758, 4.789255, 0.01125, 0.482834, 4.767816, 0.01125, 1.274426, 4.746376, 0.01125]
+    #   [0] -1.100351, 4.785694, 0.01125  C1 放货1 低层
+    #   [1] -0.308758, 4.764255, 0.01125  C2 放货2 低层
+    #   [2] 0.482834, 4.742816, 0.01125  C3 放货3 低层
+    #   [3] 1.274426, 4.721376, 0.01125  C4 放货4 低层
+    #   [4] -1.100351, 4.810694, 0.01125  C1 放货1 高层
+    #   [5] -0.308758, 4.789255, 0.01125  C2 放货2 高层
+    #   [6] 0.482834, 4.767816, 0.01125  C3 放货3 高层
+    #   [7] 1.274426, 4.746376, 0.01125  C4 放货4 高层
+
+    # ================= 取货顺序与放货映射 =================
+    cargo_color_names: ["green", "gray", "blue", "red"]   # eightboxes/OCR 0~3，日志用
+    eightboxes_pickup_index_map: [4, 5, 6, 7, 3, 2, 1, 0]  # 字符串位 i -> pickup_points 物理 index
+    dropoff_color_order: [0, 1, 2, 3]   # 第一层 4 坑位从左到右对应的颜色 id
+    dropoff_layer_stride: 4             # 第二层 index = 第一层 index + 此值
+    startup_pickup_enable: true         # true: 开局固定先取 startup_pickup_index
+    startup_pickup_index: 2         # 当前前排取货点2: [0.59, 2.44, 3.09, 1.0]
+    startup_entry_replay_after_pickup: true  # 首块取到后再回放入口固定轨迹
+    front_dependency_enable: true       # 后续取前排前，先完成同列后排
+    front_dependency_column_match: "nearest_x" # 同列按前后排 x 坐标最近匹配
+    pickup_greedy_y_distance_weight: 1.5  # 贪心最近邻时 y 方向距离权重（>1 更回避横移）
+
+    # ================= 任务流程与视觉 =================
+    external_manipulation_enable: false  # true: 到点交 task_manager；false: 本地 wait_time 等待
+    wait_time: 2.0                       # external_manipulation_enable=false 时到点等待，s
+    ocr_wait_after_eightboxes_sec: 1.0   # 收到 eightboxes 后等 OCR 的最长时间，s
+    path_fallback_timeout_sec: 5.0       # 未收到 eightboxes 时的兜底超时，s
+    ocr_result: 0
+
+    # ================= AUTO_PARKU 轨迹回放（优先级高于直线/物流）=================
+    auto_parku_enable: false
+    auto_parku_trajectory_path: "/home/cat/hitcrt_quad_ws/src/commands/lidar_nav_demo_cpp/config/trajectories/recorded_path.txt"
+    # 轨迹文件每行: time_sec x y yaw（雷达/地图系）
+
+    # ================= 物流 PRE_SCAN 入口录轨迹（spin 完成后回放，再 A*）=================
+    logistics_entry_trajectory_enable: true
+    logistics_entry_trajectory_path: "/home/cat/hitcrt_quad_ws/src/commands/lidar_nav_demo_cpp/config/trajectories/record_pass.txt"
+    entry_traj_align_position_tolerance: 0.12   # spin 后先对齐轨迹首点再开时钟
+    entry_traj_align_yaw_tolerance: 0.12
+    entry_traj_pause_tracking_error: 0.35     # 跟踪误差过大时暂停时间轴（0=关闭）
+
+    # ================= 直线模式（与物流任务互斥）=================
+    straight_line_enable: false
+    straight_target_yaw: 0.0
+    straight_target_dist: 2.0
+    straight_max_speed: 0.5
+    straight_kp_y: 0.0
+
+    # ================= 物流控制器选择 =================
+    # "heading_dock": 分阶段控制，任务赛推荐
+    # "body_pd":      纯机体系 PD，回退/对比用
+    logistics_controller_type: "heading_dock"
+
+    # ================= 到点判定 =================
+    # 兼容旧参数；物流航点实际使用下面按类型区分的阈值
+    arrival_position_tolerance: 0.10
+    arrival_yaw_tolerance: 0.15
+
+    # TRANSITION 到点判定
+    # 跨隔离带走廊 y<=pickup_rear_staging_y_min 中间点：仅 err_y（忽略 x、yaw）
+    # 跨隔离带段首/段末及其他 TRANSITION：dist < transition_dist_arrival_tolerance
+    # 取/放货前 A* 末图点（manip_approach）：dist < manip_approach_arrival_tolerance
+    transition_position_tolerance: 0.20    # 未配置 x/y 时的 fallback（路径抽稀仍用）
+    transition_position_tolerance_x: 0.10
+    transition_position_tolerance_y: 0.20
+    transition_dist_arrival_tolerance: 0.2
+    manip_approach_arrival_tolerance: 0.2
+    cross_band_transition_position_tolerance_y: 0.10   # 走廊 y<=3.5 中间点横向阈值
+    precise_lateral_arrival_tolerance_y: 0.06          # zone1 内 y-only 中间点更严横向阈值
+    precise_lateral_arrival_y_zone1_min: 0.9
+    precise_lateral_arrival_y_zone1_max: 1.3
+    transition_yaw_tolerance: 0.18         # 保留兼容；走廊 y-only 中间点到点不再检查 yaw
+
+    # PICKUP / DROPOFF
+    manip_position_tolerance: 0.05
+    manip_yaw_tolerance: 0.07
+
+    # 到点消抖：连续满足阈值达到该时长后才确认到点
+    arrival_stable_time_s: 0.25
+    transition_arrival_stable_time_s: 0.08             # dist 到点 TRANSITION / 段首段末
+    cross_band_transition_arrival_stable_time_s: 0.20    # 走廊 y-only 中间点
+    manip_arrival_stable_time_s: 0.25
+
+    # ================= body_pd 参数 =================
+    # 生效: logistics_controller_type="body_pd"；AUTO_PARKU 亦复用
+    # err_body.x->vx, err_body.y->vy, err_yaw->wz
+    kp_x: 2.0
+    kp_y: 2.0
+    kp_yaw: 1.25
+    kd_x: 0.001
+    kd_y: 0.001
+    kd_yaw: 0.001
+    lin_vel_creep_min: 0.20
+    max_vx: 0.65
+    max_vy: 0.65
+    max_dyaw: 0.7
+    yaw_first_threshold: 0.35
+
+    # ================= heading_dock 参数 =================
+    # 生效: logistics_controller_type="heading_dock"
+    # 阶段: dist>approach_to_align_dist -> APPROACH; >dock_start_dist -> ALIGN; else DOCK（仅 PICKUP/DROPOFF）
+    approach_to_align_dist: 1.5
+    dock_start_dist: 0.15
+
+    # APPROACH 限速
+    approach_max_vx: 1.0
+    approach_max_vy: 0.70
+    approach_max_wz: 0.70
+    cross_band_approach_max_vx: 0.55
+
+    # ALIGN 限速
+    align_max_vx: 0.45
+    align_max_vy: 0.60
+    align_max_wz: 0.70
+    cross_band_align_max_vx: 0.30
+    cross_band_align_max_vy: 0.50
+
+    # DOCK 限速（仅 PICKUP/DROPOFF）
+    dock_max_vx: 0.35
+    dock_max_vy: 0.60
+    dock_max_wz: 0.45
+    reverse_vx_scale: 0.5       # 后退 x 限速 = 对应阶段前进 x 上限 * 此比例
+
+    # 增益与 yaw 权重
+    kp_forward: 1.1
+    kp_bearing: 1.4              # 已废弃
+    kp_final_yaw: 1.5
+    kp_lateral_to_yaw: 0.6       # 保留兼容
+    lateral_trim_gain: 0.75
+    max_vy_trim: 1.0
+    approach_final_yaw_weight: 0.8
+    # 取/放点 APPROACH: 用受限 yaw 补偿横向 y 误差，同时保留少量 vy
+    approach_lateral_yaw_comp_enable: true
+    approach_lateral_yaw_comp_gain: 0.45    # rad/m, err_y_body -> yaw 补偿
+    approach_lateral_yaw_comp_max: 0.20     # 最大补偿角，约 17 deg
+    approach_lateral_vy_scale: 0.25         # 远距离横向速度缩放，降低横移依赖
+    align_yaw_priority_threshold: 0.8
+    dock_yaw_priority_threshold: 1.10
+    # 取/放点 DOCK: yaw 已对齐后只用 vx/vy 微调位置；未对齐时先临时收 yaw
+    dock_position_only_disable_yaw: true
+    dock_position_only_yaw_threshold: 0.05
+    align_yaw_first_enter: 0.35
+    align_yaw_first_exit: 0.20
+    align_yaw_creep_min: 0.45
+    dock_yaw_first_enter: 0.25
+    dock_yaw_first_exit: 0.12
+    yaw_deadband: 0.05
+
+    # 普通 TRANSITION 纵向优先（manip_approach / PICKUP / DROPOFF 仍用原横向 trim + dock）
+    forward_only_transition_enable: true
+    forward_only_bearing_threshold: 0.20
+    forward_only_kp_bearing: 1.2
+    forward_only_bearing_exit_threshold: 0.03
+    forward_only_max_vx: 0.7
+    forward_only_forward_creep_min: 0.2
+    forward_only_yaw_creep_min: 0.5
+    graph_reverse_yaw_threshold: 1.0   # 保留兼容；中继 TRANSITION 不再按图点 yaw 到点对齐
+
+    # 直接最近点逼近：FORWARD_ONLY 纵向限速；到点后 |yaw_err| >= 阈值才原地对准
+    direct_nearest_yaw_align_threshold: 0.35
+    direct_nearest_max_vx: 0.90
+    # 直达 PICKUP/DROPOFF 的 FORWARD_ONLY 段：距目标 <= 此值时改走 heading_dock 分段 xy+yaw
+    direct_manip_dock_handoff_dist: 1.3
+    logistics_cmd_slew_enable: true
+    logistics_cmd_slew_vx_rate: 0.8     # m/s^2；限制 linear.x 每秒最大变化
+    logistics_cmd_slew_wz_rate: 1.2     # rad/s^2；限制 angular.z 每秒最大变化
+    logistics_cmd_slew_vy_enable: false # 保留横向死区速度，不限制 linear.y
+
+    # DOCK 增益（仅 PICKUP/DROPOFF）
+    kp_dock_x: 0.75
+    kp_dock_y: 1.5
+    kp_dock_yaw: 1.2
+
+    # 最小速度 creep（克服实机死区；过大易过冲）
+    approach_creep_min: 0.40
+    align_forward_creep_min: 0.20
+    align_lateral_creep_min: 0.4
+    cross_band_align_forward_creep_min: 0.12
+    cross_band_align_lateral_creep_min: 0.35
+    precise_lateral_align_lateral_creep_min: 0.32   # zone1 严格横向区
+    dock_creep_min: 0.14                          # 兼容旧参数
+    dock_forward_creep_min: 0.22
+    dock_lateral_creep_min: 0.35
+
+/quad/task_manager_node:
+  ros__parameters:
+    # 机械臂总开关；false 时不发 /manipulator/cmd，流程仍走
+    manipulation.enable: true
+    manipulation.disabled_result_wait_s: 0.5

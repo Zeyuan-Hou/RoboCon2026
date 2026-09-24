@@ -1,0 +1,109 @@
+/quad/task_manager_node:
+  ros__parameters:
+    mission_mode: "obstacle"
+
+/quad/obstacle_nav_node:
+  ros__parameters:
+    target_frame: "camera_init"
+    child_frame: "aft_mapped"
+    tf_topic: "/tf"
+
+    # POINT_SEQUENCE, TRAJECTORY_SEQUENCE, or RECORD_PARKU_REPLAY
+    navigation_mode: "RECORD_PARKU_REPLAY"
+
+    # RECORD_PARKU_REPLAY:
+    # Use replay_path.csv for x/y/yaw tracking and events.csv for cmd_evt replay.
+    record_parku_replay_path: "/home/cat/hitcrt_quad_ws/src/pythontool/record_parku/sessions/test010/replay_path.csv"
+    record_parku_events_path: "/home/cat/hitcrt_quad_ws/src/pythontool/record_parku/sessions/test010/events.csv"
+    record_parku_action_sequences_path: "/home/cat/hitcrt_quad_ws/src/pythontool/record_parku/sessions/test010/action_sequences.csv"
+
+    # Same lidar-to-body control conversion as lidar_nav_demo_cpp.
+    lidar_offset_x: 0.05
+    lidar_offset_y: 0.0
+
+    # Circle-line lookahead target selection.
+    replay_lookahead_radius: 7.0
+    replay_intersection_search_dist: 1.0
+    replay_fallback_lookahead: 0.20
+    replay_min_forward_s: 0.02
+    # Fallback target must be physically far enough in x/y; otherwise local loops can command near-zero motion.
+    replay_min_target_xy: 0.08
+    # If the upcoming path barely moves in x/y but changes yaw, use yaw-only control before normal lookahead.
+    replay_yaw_in_place_search_s: 0.35
+    replay_yaw_in_place_xy_thresh: 0.10
+    replay_yaw_in_place_yaw_thresh: 1.0
+    replay_projection_back_dist: 0.20
+    replay_projection_forward_dist: 1.50
+    # Same yaw weight as record_parku/build_replay_path.py --yaw-weight.
+    # It lets current_s progress through yaw-only / small-xy turning segments.
+    replay_projection_yaw_weight: 0.25
+
+    # ALIGN-like tracking parameters, based on lidar_nav_demo_cpp/config/waypoints.yaml.
+    replay_kp_forward: 1.9
+    replay_kp_lateral: 2.0
+    replay_lateral_trim_gain: 0.75
+    replay_kp_yaw: 2.0
+    replay_max_vx: 0.90
+    replay_max_vy: 0.90
+    replay_max_wz: 0.70
+    replay_min_vx: 0.12
+    replay_min_vy: 0.35
+    replay_deadzone_error_x: 0.02
+    replay_deadzone_error_y: 3.0
+    # Policy-specific x/y speed scale. Yaw is not scaled.
+    # Default applies to normal ENTER_RL/TROT/CREEP replay, but not UPSTAIR/KNEEL_CRAWL.
+    replay_default_speed_scale: 1.0
+    replay_upstair_speed_scale: 0.8
+    replay_kneel_crawl_speed_scale: 2.6
+
+    # Do not replay setup/teardown/manual-manipulation events from raw joystick logs.
+    # Allowed by default: UP_DOWN/STAND(2), ENTER_RL(4), STRIDE(5), SMALL_JUMP(6), JUMP(7),
+    # KNEEL_CRAWL(8), POLICY_TROT/CREEP/UPSTAIR/KNEEL_CRAWL(9/10/11/21).
+    replay_event_min_interval_s: 0.25
+    replay_event_blocklist: [0, 1, 3, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    # Position-bound event replay. Keep durations at 0 for smooth strategy switching while tracking.
+    # Increase selected durations only when a specific action must block path replay.
+    # codes: ENTER_RL, STRIDE, SMALL_JUMP, JUMP, KNEEL_CRAWL,
+    # POLICY_TROT, POLICY_CREEP, POLICY_UPSTAIR, POLICY_KNEEL_CRAWL
+    replay_event_pause_codes: [4, 5, 6, 7, 8, 9, 10, 11, 21]
+    replay_event_pause_durations: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    # Action sequences pause path tracking and replay body-state/action switches with recorded relative timing.
+    replay_action_sequence_enable: true
+    replay_action_event_codes: [2, 4, 5, 6, 7, 8, 21]
+    replay_action_group_max_dt: 2.0
+    replay_action_group_max_xy: 0.20
+    replay_action_group_max_ds: 0.30
+    replay_action_finish_enter_rl: true
+    replay_action_finish_wait_s: 0.30
+    # Hold action states before recovering to RL_MOVE. codes: STRIDE, SMALL_JUMP, JUMP, KNEEL_CRAWL.
+    replay_action_hold_codes: [5, 6, 7, 8]
+    replay_action_hold_durations: [1.0, 3.0, 5.15, 1.0]
+    replay_action_recovery_interval_s: 0.35
+    # If replay is spatially aligned but s no longer advances, skip a small local segment.
+    replay_skip_stall_enable: true
+    replay_skip_stall_window_s: 1.0
+    replay_skip_stall_progress_epsilon: 0.01
+    replay_skip_stall_xy_error: 0.05
+    replay_skip_stall_cmd_xy: 0.05
+    replay_skip_stall_advance_s: 0.20
+    replay_skip_stall_guard_s: 0.25
+    # Publish /quad/high_command directly in addition to /quad/cmd_vel so replay still drives RL_MOVE
+    # even if the Python state_machine cmd_vel bridge is interrupted.
+    replay_publish_high_command: true
+
+    # Stuck detection and rewind retry.
+    stuck_window_s: 1.5
+    stuck_progress_epsilon: 0.01
+    rewind_distance: 0.3
+    rewind_cooldown_s: 1.0
+    # During REWIND, scale x/y velocity only; yaw is unchanged.
+    replay_rewind_speed_scale: 2.0
+    # Keep FORWARD unchanged after rewind; only REWIND x/y is boosted above.
+    replay_rewind_recover_speed_scale: 1.0
+
+    # Finish thresholds.
+    finish_s_tolerance: 0.08
+    finish_xy_tolerance: 0.10
+    finish_yaw_tolerance: 0.20
+
+    control_rate: 50.0

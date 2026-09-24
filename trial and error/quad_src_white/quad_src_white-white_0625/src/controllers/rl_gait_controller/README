@@ -1,0 +1,21 @@
+# 策略模型输入
+# cmd vx,vy,yaw
+obs[0, 0] = cmd.vx * cfg.normalization.obs_scales.lin_vel  
+obs[0, 1] = cmd.vy * cfg.normalization.obs_scales.lin_vel
+obs[0, 2] = cmd.dyaw * cfg.normalization.obs_scales.ang_vel
+# omega from imu.angle_vel
+obs[0, 3] = omega[0] * cfg.normalization.obs_scales.ang_vel 
+obs[0, 4] = omega[1] * cfg.normalization.obs_scales.ang_vel
+obs[0, 5] = omega[2] * cfg.normalization.obs_scales.ang_vel
+# gvec compute from imu.angle_vel
+obs[0, 6] = gvec[0]
+obs[0, 7] = gvec[1]
+obs[0, 8] = gvec[2]
+# dof_pos from encoder.qpos 
+obs[0, 9:21] = (q - default_dof_pos) * cfg.normalization.obs_scales.dof_pos
+# dof_vel from encoder.qvel
+obs[0, 21:33] = dq * cfg.normalization.obs_scales.dof_vel
+# last action
+obs[0, 33:45] = last_action
+
+# 输出

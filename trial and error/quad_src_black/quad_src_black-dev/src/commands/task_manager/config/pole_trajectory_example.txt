@@ -1,0 +1,7 @@
+# Recorded pole trajectory in lidar/world frame (camera_init): time_sec x y yaw
+# Replace these sample points with output from src/pythontool/record_trajectory.py.
+0.0 0.0 0.0 0.0
+0.5 0.2 0.3 0.2
+1.0 0.5 0.5 0.6
+1.5 0.8 0.4 1.0
+2.0 1.0 0.1 1.3

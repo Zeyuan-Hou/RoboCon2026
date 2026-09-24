@@ -1,0 +1,14 @@
+{
+  "created_unix_time": 1782937852.17981,
+  "target_frame": "camera_init",
+  "child_frame": "aft_mapped",
+  "topics": {
+    "tf": "/tf",
+    "joy": "/quad/js_pub",
+    "cmd_evt": "/quad/cmd_evt",
+    "state_array": "/quad/state_array",
+    "task_state_command": "/quad/task_state_command",
+    "current_state": "/quad/current_state",
+    "cmd_vel": "/quad/cmd_vel"
+  }
+}

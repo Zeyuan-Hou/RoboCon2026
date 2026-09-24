@@ -1,0 +1,65 @@
+task_executor_node:
+  ros__parameters:
+    target_frame: "camera_init"
+    child_frame: "aft_mapped"
+    tf_topic: "/tf"
+
+    # Bridge
+    straight_target_yaw: 0.0
+    straight_target_dist: 4.0
+    straight_max_speed: 0.5
+    straight_kp_y: 2.0
+    kp_xy: 0.5
+    kp_yaw: 1.0
+    max_vy: 0.5
+    max_dyaw: 0.5
+
+    visual_servoing:
+      # QR visual frame: x right +, y forward +, yaw clockwise +.
+      # Each offset is [x_mm, y_mm, yaw_deg].
+      default_offset: [0.0, 700.0, 0.0]
+
+      task_1_offset: [0.0, 50.0, 0.0]
+      task_2_offset: [0.0, 50.0, 0.0]
+      task_3_offset: [0.0, 50.0, 0.0]
+      task_4_offset: [0.0, 50.0, 0.0]
+      task_5_offset: [0.0, 50.0, 0.0]
+      task_6_offset: [0.0, 50.0, 0.0]
+
+    tasks:
+      # Stair up: lidar-guided straight motion until the forward distance is reached
+      stair_duration: 4.0
+      stair_target_yaw: 0.0
+      stair_use_current_yaw: true
+      stair_forward_speed: 0.25
+      stair_kp_y: 2.0
+      stair_kp_yaw: 1.0
+      stair_max_vy: 0.25
+      stair_max_dyaw: 0.4
+      stair_max_distance: 4.0
+
+      # Lidar-guided crawl after switching RL policy to creep.
+      crawl_target_yaw: 0.0
+      crawl_use_current_yaw: true
+      crawl_forward_speed: 0.25
+      crawl_kp_y: 1.0
+      crawl_kp_yaw: 1.0
+      crawl_max_vy: 0.2
+      crawl_max_dyaw: 0.3
+      crawl_target_dist: 1.5
+
+      # Pole around: recorded trajectory replay in lidar/world frame.
+      # File format: time_sec x y yaw
+      pole_trajectory_file: ""
+      pole_kp_x: 0.8
+      pole_kp_y: 0.8
+      pole_kp_yaw: 1.0
+      pole_kd_x: 0.0
+      pole_kd_y: 0.0
+      pole_kd_yaw: 0.0
+      pole_lin_vel_creep_min: 0.0
+      pole_lidar_offset_x: 0.0
+      pole_lidar_offset_y: 0.0
+      pole_max_vx: 0.35
+      pole_max_vy: 0.35
+      pole_max_dyaw: 0.5

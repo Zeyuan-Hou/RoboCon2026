@@ -1,0 +1,106 @@
+obstacle_nav_node:
+  ros__parameters:
+    target_frame: "camera_init"
+    child_frame: "aft_mapped"
+    tf_topic: "/tf"
+
+    # POINT_SEQUENCE, TRAJECTORY_SEQUENCE, or RECORD_PARKU_REPLAY
+    navigation_mode: "POINT_SEQUENCE"
+
+    # POINT_SEQUENCE:
+    # Flat triples in lidar/world frame: [x1, y1, yaw1, x2, y2, yaw2, ...]
+    target_points: [
+      0.0, 1.5, 0.0,
+      0.0, 3.0, 0.0
+    ]
+
+    # TRAJECTORY_SEQUENCE:
+    # Each file contains absolute lidar/world-frame points: x y yaw
+    # trajectory_files:
+    #   - "/absolute/path/to/obstacle_1_nav.txt"
+    #   - "/absolute/path/to/obstacle_2_nav.txt"
+
+    position_tolerance: 0.10
+    yaw_tolerance: 0.10
+
+    kp_x: 0.6
+    kp_y: 1.0
+    kp_yaw: 0.8
+    kd_x: 0.0
+    kd_y: 0.0
+    kd_yaw: 0.0
+
+    max_vx: 0.45
+    max_vy: 0.35
+    max_dyaw: 0.6
+    yaw_first_threshold: 0.25
+
+    # RECORD_PARKU_REPLAY:
+    # Use replay_path.csv for x/y/yaw tracking and events.csv for cmd_evt replay.
+    record_parku_replay_path: "/home/cat/hitcrt_quad_ws/src/pythontool/record_parku/output/replay_path.csv"
+    record_parku_events_path: "/home/cat/hitcrt_quad_ws/src/pythontool/record_parku/output/events.csv"
+    record_parku_action_sequences_path: "/home/cat/hitcrt_quad_ws/src/pythontool/record_parku/output/action_sequences.csv"
+
+    # Same lidar-to-body control conversion as lidar_nav_demo_cpp.
+    lidar_offset_x: 0.05
+    lidar_offset_y: 0.0
+
+    replay_lookahead_radius: 0.25
+    replay_intersection_search_dist: 1.0
+    replay_fallback_lookahead: 0.18
+    replay_min_forward_s: 0.03
+    replay_min_target_xy: 0.08
+    replay_yaw_in_place_search_s: 0.35
+    replay_yaw_in_place_xy_thresh: 0.10
+    replay_yaw_in_place_yaw_thresh: 1.0
+    replay_projection_back_dist: 0.20
+    replay_projection_forward_dist: 1.50
+
+    # ALIGN-like tracking parameters, based on lidar_nav_demo_cpp/config/waypoints.yaml.
+    replay_kp_forward: 1.1
+    replay_kp_lateral: 0.75
+    replay_lateral_trim_gain: 0.75
+    replay_kp_yaw: 1.5
+    replay_max_vx: 0.45
+    replay_max_vy: 0.60
+    replay_max_wz: 0.70
+    replay_min_vx: 0.20
+    replay_min_vy: 0.35
+    replay_deadzone_error_x: 0.04
+    replay_deadzone_error_y: 0.04
+    replay_default_speed_scale: 1.3
+    replay_upstair_speed_scale: 1.3
+    replay_kneel_crawl_speed_scale: 2.2
+    replay_event_min_interval_s: 0.25
+    replay_event_blocklist: [0, 1, 3, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    replay_event_pause_codes: [4, 5, 6, 7, 8, 9, 10, 11, 21]
+    replay_event_pause_durations: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    replay_action_sequence_enable: true
+    replay_action_event_codes: [2, 4, 5, 6, 7, 8, 21]
+    replay_action_group_max_dt: 2.0
+    replay_action_group_max_xy: 0.20
+    replay_action_group_max_ds: 0.30
+    replay_action_finish_enter_rl: true
+    replay_action_finish_wait_s: 0.30
+    replay_action_hold_codes: [5, 6, 7, 8]
+    replay_action_hold_durations: [7.0, 1.0, 3.5, 1.0]
+    replay_action_recovery_interval_s: 0.35
+    replay_skip_stall_enable: true
+    replay_skip_stall_window_s: 1.0
+    replay_skip_stall_progress_epsilon: 0.01
+    replay_skip_stall_xy_error: 0.05
+    replay_skip_stall_cmd_xy: 0.20
+    replay_skip_stall_advance_s: 0.20
+    replay_skip_stall_guard_s: 0.25
+
+    stuck_window_s: 3.0
+    stuck_progress_epsilon: 0.03
+    rewind_distance: 0.3
+    rewind_cooldown_s: 1.0
+replay_rewind_speed_scale: 2.0
+replay_rewind_recover_speed_scale: 1.0
+    finish_s_tolerance: 0.08
+    finish_xy_tolerance: 0.10
+    finish_yaw_tolerance: 0.20
+
+    control_rate: 50.0

@@ -1,0 +1,21 @@
+task_bridge_cross_node:
+  ros__parameters:
+    # --- TF 坐标系与话题配置 ---
+    target_frame: "camera_init"
+    child_frame: "aft_mapped"
+    tf_topic: "/tf"
+    
+    # --- 走木桥直线控制参数 ---
+    straight_target_yaw: 0.0      # 走桥时的目标朝向偏航角 (rad)
+    straight_target_dist: 4.0     # 走桥需要行进的总距离 (m)
+    straight_max_speed: 0.5       # 直线行进时的最大前向速度 (m/s)
+    straight_kp_y: 2.0            # 横向误差（走歪了）纠偏的 P 增益系数
+    
+    # --- 通用运动控制增益 ---
+    kp_xy: 0.5                    # 前向位置控制的 P 增益
+    kp_yaw: 1.0                   # 偏航角纠正的 P 增益
+    max_vy: 0.5                   # 最大横向纠偏速度 (m/s)
+    max_dyaw: 0.5                 # 最大旋转角速度 (rad/s)
+    
+    # --- 节点运行配置 ---
+    control_rate: 50.0            # 控制循环频率 (Hz)
